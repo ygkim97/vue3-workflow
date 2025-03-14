@@ -1,7 +1,16 @@
 <template>
   <div class="work-flow">
     <header>Nuxt - Work Flow Test</header>
-    <VueFlowCore id="nuxtVueFlow" :nodes="nodes" :edges="edges" />
+    <VueFlowCore
+      id="nuxtVueFlow"
+      :nodes="nodes"
+      :edges="edges"
+      bg-color="#edf2f7"
+      :showBgPattern="true"
+      :bg-pattern-gap="20"
+      :bg-pattern-size="2"
+      bg-pattern-color="gray"
+    />
   </div>
 </template>
 

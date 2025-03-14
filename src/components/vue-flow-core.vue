@@ -1,5 +1,13 @@
 <template>
-  <VueFlow :id="id" :nodes="props.nodes" :edges="props.edges"> </VueFlow>
+  <VueFlow :id="props.id" :nodes="props.nodes" :edges="props.edges">
+    <Background
+      :bg-color="props.bgColor"
+      :show-bg-pattern="props.showBgPattern"
+      :bg-pattern-gap="props.bgPatternGap"
+      :bg-pattern-size="props.bgPatternSize"
+      :bg-pattern-color="props.bgPatternColor"
+    />
+  </VueFlow>
 </template>
 
 <script lang="ts" setup>
@@ -7,6 +15,8 @@ import { VueFlow } from "@vue-flow/core";
 import type { PropType } from "vue";
 import type { Node, Edge } from "@vue-flow/core";
 import GraphData1 from "../graph-data/graph-data-1.json";
+
+import Background from "./custom/background.vue";
 
 const props = defineProps({
   id: {
@@ -26,6 +36,26 @@ const props = defineProps({
       // TODO: 개발하기 위해 default 데이터 설정, 개발 완료 후 삭제
       return GraphData1.edges;
     }
+  },
+  showBgPattern: {
+    type: Boolean,
+    default: true
+  },
+  bgPatternGap: {
+    type: Number,
+    default: 10
+  },
+  bgColor: {
+    type: String,
+    default: "#fff"
+  },
+  bgPatternSize: {
+    type: Number,
+    default: 0.4
+  },
+  bgPatternColor: {
+    type: String,
+    default: "#81818a"
   }
 });
 </script>
