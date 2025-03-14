@@ -1,0 +1,42 @@
+{
+  "nodes": [
+    {
+      "id": "test1",
+      "type": "input",
+      "position": { "x": 100, "y": 100 },
+      "data": { "label": "Start" }
+    },
+    {
+      "id": "test2",
+      "type": "default",
+      "position": { "x": 400, "y": 100 },
+      "data": { "label": "Process" }
+    },
+    {
+      "id": "test3",
+      "type": "default",
+      "position": { "x": 100, "y": 300 },
+      "data": { "label": "Process" }
+    },
+    {
+      "id": "test4",
+      "type": "default",
+      "position": { "x": 400, "y": 300 },
+      "data": { "label": "Process" }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-2",
+      "type": "step",
+      "source": "test1",
+      "target": "test2"
+    },
+    {
+      "id": "e2-4",
+      "type": "step",
+      "source": "test2",
+      "target": "test4"
+    }
+  ]
+}
