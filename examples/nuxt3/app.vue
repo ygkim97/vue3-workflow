@@ -10,6 +10,9 @@
       :bg-pattern-gap="20"
       :bg-pattern-size="2"
       bg-pattern-color="gray"
+      :min-zoom="0"
+      :max-zoom="100"
+      :snap-grid="[200, 200]"
     />
   </div>
 </template>
