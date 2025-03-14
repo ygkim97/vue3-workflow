@@ -7,8 +7,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.js"),
-      name: "YongComponent",
-      fileName: (format) => `yongs-component.${format}.min.js`,
+      name: "VueFlowCore",
+      fileName: (format) => `vue-flow-core.${format}.min.js`,
     },
     rollupOptions: {
       external: ["vue"], // Vue를 외부 모듈로 설정

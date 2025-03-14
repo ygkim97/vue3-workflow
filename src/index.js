@@ -1,3 +1,3 @@
-import YongsComponent from "./components/yongs-component.vue"; 
+import VueFlowCore from "./components/vue-flow-core.vue";
 
-export default YongsComponent;
+export default VueFlowCore;
