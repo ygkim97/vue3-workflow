@@ -11,14 +11,25 @@
       :bg-pattern-size="2"
       bg-pattern-color="gray"
       :min-zoom="0"
-      :max-zoom="100"
+      :max-zoom="20"
       :snap-grid="[200, 200]"
+      :use-mini-map="true"
+      mini-map-position="top-left"
+      mini-map-node-color="darkgray"
+      mini-map-node-stroke-color="navy"
+      mini-map-node-class-name="map-class"
+      :mini-map-node-border-radius="15"
+      :mini-map-node-stroke-width="5"
+      mini-map-mask-color="lightgray"
+      :mini-map-pannable="true"
+      :mini-map-zoomable="true"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { MarkerType } from "@vue-flow/core";
+import MiniMap from "../../src/components/custom/MiniMap.vue";
 
 const nodes = ref([
   {

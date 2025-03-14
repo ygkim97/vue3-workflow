@@ -18,16 +18,29 @@
       :bg-pattern-size="props.bgPatternSize"
       :bg-pattern-color="props.bgPatternColor"
     />
+    <MiniMap
+      :use-mini-map="props.useMiniMap"
+      :mini-map-position="miniMapPosition"
+      :mini-map-node-color="miniMapNodeColor"
+      :mini-map-node-stroke-color="miniMapNodeStrokeColor"
+      :mini-map-node-class-name="miniMapNodeClassName"
+      :mini-map-node-border-radius="miniMapNodeBorderRadius"
+      :mini-map-node-stroke-width="miniMapNodeStrokeWidth"
+      :mini-map-mask-color="miniMapMaskColor"
+      :mini-map-pannable="miniMapPannable"
+      :mini-map-zoomable="miniMapZoomable"
+    />
   </VueFlow>
 </template>
 
 <script lang="ts" setup>
-import { VueFlow } from "@vue-flow/core";
+import { type PanelPositionType, VueFlow } from "@vue-flow/core";
 import type { PropType } from "vue";
 import type { Node, Edge } from "@vue-flow/core";
 import GraphData1 from "../graph-data/graph-data-1.json";
 
 import Background from "./custom/background.vue";
+import MiniMap from "./custom/MiniMap.vue";
 
 const props = defineProps({
   id: {
@@ -80,6 +93,45 @@ const props = defineProps({
   bgPatternColor: {
     type: String,
     default: "#81818a"
+  },
+  useMiniMap: {
+    type: Boolean,
+    default: true
+  },
+  miniMapPosition: {
+    type: String as PropType<PanelPositionType>,
+    default: "bottom-right"
+  },
+  miniMapNodeColor: {
+    type: String,
+    default: "#fff"
+  },
+  miniMapNodeStrokeColor: {
+    type: String,
+    default: "#555"
+  },
+  miniMapNodeClassName: {
+    type: String
+  },
+  miniMapNodeBorderRadius: {
+    type: Number,
+    default: 5
+  },
+  miniMapNodeStrokeWidth: {
+    type: Number,
+    default: 2
+  },
+  miniMapMaskColor: {
+    type: String,
+    default: "rgb(240, 242, 243, 0.7)"
+  },
+  miniMapPannable: {
+    type: Boolean,
+    default: true
+  },
+  miniMapZoomable: {
+    type: Boolean,
+    default: true
   }
 });
 </script>
