@@ -19,7 +19,8 @@ export default defineConfig({
         globals: {
           vue: "Vue"
         },
-        exports: "named" // UMD에서 named export 사용
+        exports: "named", // UMD에서 named export 사용
+        assetFileNames: "vue-flow-core.min.css"
       }
     },
     minify: "terser" // UMD 파일 크기 최적화
