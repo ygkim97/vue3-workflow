@@ -2,28 +2,23 @@
   <Controls
     v-if="props.useControl"
     :position="props.controlPosition"
-    :show-zoom="props.showZoom"
-    :show-fit-view="props.showFitView"
-    :show-interactive="props.showInteractive"
-    :show-undo="props.showUndo"
-    :show-redo="props.showRedo"
-    :show-screen-shot="props.showScreenShot"
-    :show-theme="props.showTheme"
-    :show-save="props.showSave"
+    :show-zoom="props.controlShowZoom"
+    :show-fit-view="props.controlShowFitView"
+    :show-interactive="props.controlShowInteractive"
   >
-    <ControlButton v-if="props.showUndo" @click="undoBtnClick">
+    <ControlButton v-if="props.controlShowUndo" @click="undoBtnClick">
       <SvgICon name="arrow-rotate-left"></SvgICon>
     </ControlButton>
-    <ControlButton v-if="props.showRedo" @click="redoBtnClick">
+    <ControlButton v-if="props.controlShowRedo" @click="redoBtnClick">
       <SvgICon name="arrow-rotate-right"></SvgICon>
     </ControlButton>
-    <ControlButton v-if="props.showScreenShot" @click="screenShotBtnClick">
+    <ControlButton v-if="props.controlShowScreenShot" @click="screenShotBtnClick">
       <SvgICon name="camera"></SvgICon>
     </ControlButton>
-    <ControlButton v-if="props.showSave" @click="saveBtnClick">
+    <ControlButton v-if="props.controlShowSave" @click="saveBtnClick">
       <SvgICon name="floppy-disk"></SvgICon>
     </ControlButton>
-    <ControlButton v-if="props.showTheme" @click="themeBtnClick">
+    <ControlButton v-if="props.controlShowTheme" @click="themeBtnClick">
       <SvgICon :name="theme === 'light' ? 'moon' : 'sun'"></SvgICon>
     </ControlButton>
   </Controls>
@@ -44,35 +39,35 @@ const props = defineProps({
     type: String as PropType<PanelPositionType>,
     default: "top-right"
   },
-  showZoom: {
+  controlShowZoom: {
     type: Boolean,
     default: true
   },
-  showFitView: {
+  controlShowFitView: {
     type: Boolean,
     default: true
   },
-  showInteractive: {
+  controlShowInteractive: {
     type: Boolean,
     default: true
   },
-  showUndo: {
+  controlShowUndo: {
     type: Boolean,
     default: true
   },
-  showRedo: {
+  controlShowRedo: {
     type: Boolean,
     default: true
   },
-  showScreenShot: {
+  controlShowScreenShot: {
     type: Boolean,
     default: true
   },
-  showTheme: {
+  controlShowTheme: {
     type: Boolean,
     default: true
   },
-  showSave: {
+  controlShowSave: {
     type: Boolean,
     default: true
   }

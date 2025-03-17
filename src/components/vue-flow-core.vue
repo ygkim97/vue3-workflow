@@ -34,14 +34,14 @@
     <Controls
       :use-control="props.useControl"
       :control-position="props.controlPosition"
-      :show-zoom="props.showZoom"
-      :show-fit-view="props.showFitView"
-      :show-interactive="props.showInteractive"
-      :show-undo="props.showUndo"
-      :show-redo="props.showRedo"
-      :show-screen-shot="props.showScreenShot"
-      :show-theme="props.showTheme"
-      :show-save="props.showSave"
+      :control-show-zoom="props.controlShowZoom"
+      :control-show-fit-view="props.controlShowFitView"
+      :control-show-interactive="props.controlShowInteractive"
+      :control-show-undo="props.controlShowUndo"
+      :control-show-redo="props.controlShowRedo"
+      :control-show-screen-shot="props.controlShowScreenShot"
+      :control-show-theme="props.controlShowTheme"
+      :control-show-save="props.controlShowSave"
       @undo="$emit('undo', $event)"
       @redo="$emit('redo', $event)"
       @screenShot="$emit('screenShot')"
@@ -180,35 +180,35 @@ const props = defineProps({
     type: String as PropType<PanelPositionType>,
     default: "top-right"
   },
-  showZoom: {
+  controlShowZoom: {
     type: Boolean,
     default: true
   },
-  showFitView: {
+  controlShowFitView: {
     type: Boolean,
     default: true
   },
-  showInteractive: {
+  controlShowInteractive: {
     type: Boolean,
     default: true
   },
-  showUndo: {
+  controlShowUndo: {
     type: Boolean,
     default: true
   },
-  showRedo: {
+  controlShowRedo: {
     type: Boolean,
     default: true
   },
-  showScreenShot: {
+  controlShowScreenShot: {
     type: Boolean,
     default: true
   },
-  showTheme: {
+  controlShowTheme: {
     type: Boolean,
     default: true
   },
-  showSave: {
+  controlShowSave: {
     type: Boolean,
     default: true
   },
