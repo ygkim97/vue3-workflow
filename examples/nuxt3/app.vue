@@ -37,11 +37,19 @@
       node-type-key="nodeType"
       :default-node-style="defaultNodeStyle"
       :default-handle-style="defaultHandleStyle"
+      :use-node-toolbar="true"
+      node-toolbar-position="bottom"
+      :node-toolbar-offset="10"
+      :node-toolbar-show-add="true"
+      :node-toolbar-show-delete="true"
+      :node-toolbar-show-edit="true"
+      :node-toolbar-show-copy="true"
       @undo="controlsEvent('undo', $event)"
       @redo="controlsEvent('redo', $event)"
       @screenShot="controlsEvent('screenShot')"
       @save="controlsEvent('save', $event)"
       @switchTheme="controlsEvent('switchTheme', $event)"
+      @toolbarItemClick="toolbarItemClick"
     />
   </div>
 </template>
@@ -98,6 +106,10 @@ const defaultHandleStyle = ref({
 
 const controlsEvent = (eventName: string, event?: Event) => {
   console.log(eventName, event);
+};
+
+const toolbarItemClick = (event: { id: string }) => {
+  console.log(event);
 };
 </script>
 

@@ -57,13 +57,21 @@
         :node-type-key="props.nodeTypeKey"
         :default-node-style="props.defaultNodeStyle"
         :default-handle-style="props.defaultHandleStyle"
+        :use-node-toolbar="props.useNodeToolbar"
+        :node-toolbar-position="props.nodeToolbarPosition"
+        :node-toolbar-offset="props.nodeToolbarOffset"
+        :node-toolbar-show-add="props.nodeToolbarShowAdd"
+        :node-toolbar-show-delete="props.nodeToolbarShowDelete"
+        :node-toolbar-show-edit="props.nodeToolbarShowEdit"
+        :node-toolbar-show-copy="props.nodeToolbarShowCopy"
+        @toolbarItemClick="$emit('toolbarItemClick', $event)"
       />
     </template>
   </VueFlow>
 </template>
 
 <script lang="ts" setup>
-import { type PanelPositionType, VueFlow } from "@vue-flow/core";
+import { type PanelPositionType, Position, VueFlow } from "@vue-flow/core";
 import type { PropType } from "vue";
 import type { Node, Edge } from "@vue-flow/core";
 import GraphData1 from "../graph-data/graph-data-1.json";
@@ -221,6 +229,34 @@ const props = defineProps({
   defaultHandleStyle: {
     type: Object,
     default: () => {}
+  },
+  useNodeToolbar: {
+    type: Boolean,
+    default: true
+  },
+  nodeToolbarPosition: {
+    type: String as PropType<Position>,
+    default: "bottom"
+  },
+  nodeToolbarOffset: {
+    type: Number,
+    default: 10
+  },
+  nodeToolbarShowAdd: {
+    type: Boolean,
+    default: true
+  },
+  nodeToolbarShowDelete: {
+    type: Boolean,
+    default: true
+  },
+  nodeToolbarShowEdit: {
+    type: Boolean,
+    default: true
+  },
+  nodeToolbarShowCopy: {
+    type: Boolean,
+    default: true
   }
 });
 </script>
