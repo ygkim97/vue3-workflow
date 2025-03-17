@@ -110,7 +110,7 @@ const saveBtnClick = () => {
 
 const themeBtnClick = () => {
   theme.value = theme.value === "light" ? "dark" : "light";
-  emit("onSwitchTheme", { theme: theme.value });
+  emit("switchTheme", { theme: theme.value });
 };
 </script>
 

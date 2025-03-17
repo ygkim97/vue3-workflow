@@ -48,6 +48,17 @@
       @save="$emit('save', $event)"
       @switchTheme="$emit('switchTheme', $event)"
     ></Controls>
+
+    <template #node-custom="customNodeProps">
+      <CustomNode
+        :id="customNodeProps.id"
+        :data="customNodeProps.data"
+        :node-label-key="props.nodeLabelKey"
+        :node-type-key="props.nodeTypeKey"
+        :default-node-style="props.defaultNodeStyle"
+        :default-handle-style="props.defaultHandleStyle"
+      />
+    </template>
   </VueFlow>
 </template>
 
@@ -60,6 +71,7 @@ import GraphData1 from "../graph-data/graph-data-1.json";
 import Background from "./custom/background.vue";
 import MiniMap from "./custom/MiniMap.vue";
 import Controls from "./custom/Controls.vue";
+import CustomNode from "./custom/Node.vue";
 
 const props = defineProps({
   id: {
@@ -191,6 +203,24 @@ const props = defineProps({
   showSave: {
     type: Boolean,
     default: true
+  },
+  nodeLabelKey: {
+    type: String,
+    default: "label"
+  },
+  nodeTypeKey: {
+    type: String,
+    default: "type"
+  },
+  defaultNodeStyle: {
+    type: Object,
+    default: () => {
+      return {};
+    }
+  },
+  defaultHandleStyle: {
+    type: Object,
+    default: () => {}
   }
 });
 </script>

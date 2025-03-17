@@ -33,6 +33,10 @@
       :show-screen-shot="true"
       :show-theme="true"
       :show-save="true"
+      node-label-key="name"
+      node-type-key="nodeType"
+      :default-node-style="defaultNodeStyle"
+      :default-handle-style="defaultHandleStyle"
       @undo="controlsEvent('undo', $event)"
       @redo="controlsEvent('redo', $event)"
       @screenShot="controlsEvent('screenShot')"
@@ -48,15 +52,15 @@ import { MarkerType } from "@vue-flow/core";
 const nodes = ref([
   {
     id: "test1",
-    type: "input",
+    type: "custom",
     position: { x: 100, y: 100 },
-    data: { label: "Start" }
+    data: { name: "Start", nodeType: "input" }
   },
   {
     id: "test2",
-    type: "default",
+    type: "custom",
     position: { x: 400, y: 100 },
-    data: { label: "Process" }
+    data: { name: "Process" }
   }
 ]);
 const edges = ref([
@@ -68,6 +72,29 @@ const edges = ref([
     markerEnd: MarkerType.ArrowClosed
   }
 ]);
+
+const defaultNodeStyle = ref({
+  backgroundColor: "white",
+  width: "100px",
+  height: "10px",
+  color: "navy",
+  fontSize: "10px",
+  fontWeight: "bold",
+  borderStyle: "solid",
+  borderColor: "navy",
+  borderWidth: "2px",
+  borderRadius: "30px"
+});
+
+const defaultHandleStyle = ref({
+  backgroundColor: "white",
+  width: "5px",
+  height: "5px",
+  borderStyle: "solid",
+  borderColor: "navy",
+  borderWidth: "2px",
+  borderRadius: "100%"
+});
 
 const controlsEvent = (eventName: string, event?: Event) => {
   console.log(eventName, event);
