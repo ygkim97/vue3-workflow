@@ -20,16 +20,34 @@
     />
     <MiniMap
       :use-mini-map="props.useMiniMap"
-      :mini-map-position="miniMapPosition"
-      :mini-map-node-color="miniMapNodeColor"
-      :mini-map-node-stroke-color="miniMapNodeStrokeColor"
-      :mini-map-node-class-name="miniMapNodeClassName"
-      :mini-map-node-border-radius="miniMapNodeBorderRadius"
-      :mini-map-node-stroke-width="miniMapNodeStrokeWidth"
-      :mini-map-mask-color="miniMapMaskColor"
-      :mini-map-pannable="miniMapPannable"
-      :mini-map-zoomable="miniMapZoomable"
+      :mini-map-position="props.miniMapPosition"
+      :mini-map-node-color="props.miniMapNodeColor"
+      :mini-map-node-stroke-color="props.miniMapNodeStrokeColor"
+      :mini-map-node-class-name="props.miniMapNodeClassName"
+      :mini-map-node-border-radius="props.miniMapNodeBorderRadius"
+      :mini-map-node-stroke-width="props.miniMapNodeStrokeWidth"
+      :mini-map-mask-color="props.miniMapMaskColor"
+      :mini-map-pannable="props.miniMapPannable"
+      :mini-map-zoomable="props.miniMapZoomable"
     />
+    <!-- TODO: Control 추가 기능 구현 -->
+    <Controls
+      :use-control="props.useControl"
+      :control-position="props.controlPosition"
+      :show-zoom="props.showZoom"
+      :show-fit-view="props.showFitView"
+      :show-interactive="props.showInteractive"
+      :show-undo="props.showUndo"
+      :show-redo="props.showRedo"
+      :show-screen-shot="props.showScreenShot"
+      :show-theme="props.showTheme"
+      :show-save="props.showSave"
+      @undo="$emit('undo', $event)"
+      @redo="$emit('redo', $event)"
+      @screenShot="$emit('screenShot')"
+      @save="$emit('save', $event)"
+      @switchTheme="$emit('switchTheme', $event)"
+    ></Controls>
   </VueFlow>
 </template>
 
@@ -41,6 +59,7 @@ import GraphData1 from "../graph-data/graph-data-1.json";
 
 import Background from "./custom/background.vue";
 import MiniMap from "./custom/MiniMap.vue";
+import Controls from "./custom/Controls.vue";
 
 const props = defineProps({
   id: {
@@ -130,6 +149,46 @@ const props = defineProps({
     default: true
   },
   miniMapZoomable: {
+    type: Boolean,
+    default: true
+  },
+  useControl: {
+    type: Boolean,
+    default: true
+  },
+  controlPosition: {
+    type: String as PropType<PanelPositionType>,
+    default: "top-right"
+  },
+  showZoom: {
+    type: Boolean,
+    default: true
+  },
+  showFitView: {
+    type: Boolean,
+    default: true
+  },
+  showInteractive: {
+    type: Boolean,
+    default: true
+  },
+  showUndo: {
+    type: Boolean,
+    default: true
+  },
+  showRedo: {
+    type: Boolean,
+    default: true
+  },
+  showScreenShot: {
+    type: Boolean,
+    default: true
+  },
+  showTheme: {
+    type: Boolean,
+    default: true
+  },
+  showSave: {
     type: Boolean,
     default: true
   }

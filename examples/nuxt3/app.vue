@@ -23,13 +23,27 @@
       mini-map-mask-color="lightgray"
       :mini-map-pannable="true"
       :mini-map-zoomable="true"
+      :use-control="true"
+      control-position="top-center"
+      :show-zoom="true"
+      :show-fit-view="true"
+      :show-interactive="true"
+      :show-undo="true"
+      :show-redo="true"
+      :show-screen-shot="true"
+      :show-theme="true"
+      :show-save="true"
+      @undo="controlsEvent('undo', $event)"
+      @redo="controlsEvent('redo', $event)"
+      @screenShot="controlsEvent('screenShot')"
+      @save="controlsEvent('save', $event)"
+      @switchTheme="controlsEvent('switchTheme', $event)"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { MarkerType } from "@vue-flow/core";
-import MiniMap from "../../src/components/custom/MiniMap.vue";
 
 const nodes = ref([
   {
@@ -54,6 +68,10 @@ const edges = ref([
     markerEnd: MarkerType.ArrowClosed
   }
 ]);
+
+const controlsEvent = (eventName: string, event?: Event) => {
+  console.log(eventName, event);
+};
 </script>
 
 <style>
