@@ -18,6 +18,9 @@
     <ControlButton v-if="props.controlShowSave" @click="saveBtnClick">
       <SvgICon name="floppy-disk"></SvgICon>
     </ControlButton>
+    <ControlButton v-if="props.controlShowExecution" @click="executionBtnClick">
+      <SvgICon name="play"></SvgICon>
+    </ControlButton>
     <ControlButton v-if="props.controlShowTheme" @click="themeBtnClick">
       <SvgICon :name="theme === 'light' ? 'moon' : 'sun'"></SvgICon>
     </ControlButton>
@@ -70,6 +73,10 @@ const props = defineProps({
   controlShowSave: {
     type: Boolean,
     default: true
+  },
+  controlShowExecution: {
+    type: Boolean,
+    default: true
   }
 });
 
@@ -78,6 +85,7 @@ const emit = defineEmits<{
   (e: "redo", item: object): void;
   (e: "screenShot"): void;
   (e: "save", item: object): void;
+  (e: "execution", item: object): void;
   (e: "switchTheme", item: object): void;
 }>();
 
@@ -100,7 +108,12 @@ const screenShotBtnClick = () => {
 
 // TODO: Nodes, Edges Data 전달 기능 구현
 const saveBtnClick = () => {
-  emit("switchTheme", { nodes: [], edges: [] });
+  emit("save", { nodes: [], edges: [] });
+};
+
+// TODO: Node 전체 실행
+const executionBtnClick = () => {
+  emit("execution", { graph: [] });
 };
 
 const themeBtnClick = () => {

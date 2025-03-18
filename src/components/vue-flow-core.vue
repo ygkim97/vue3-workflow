@@ -42,10 +42,12 @@
       :control-show-screen-shot="props.controlShowScreenShot"
       :control-show-theme="props.controlShowTheme"
       :control-show-save="props.controlShowSave"
+      :control-show-execution="props.controlShowExecution"
       @undo="$emit('undo', $event)"
       @redo="$emit('redo', $event)"
       @screenShot="$emit('screenShot')"
       @save="$emit('save', $event)"
+      @execution="$emit('execution', $event)"
       @switchTheme="$emit('switchTheme', $event)"
     ></Controls>
 
@@ -218,6 +220,10 @@ const props = defineProps({
     default: true
   },
   controlShowSave: {
+    type: Boolean,
+    default: true
+  },
+  controlShowExecution: {
     type: Boolean,
     default: true
   },

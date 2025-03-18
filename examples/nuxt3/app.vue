@@ -33,6 +33,7 @@
       :control-show-screen-shot="true"
       :control-show-theme="true"
       :control-show-save="true"
+      :control-show-execution="true"
       node-label-key="name"
       node-type-key="nodeType"
       :default-node-style="defaultNodeStyle"
@@ -52,14 +53,13 @@
       @screenShot="controlsEvent('screenShot')"
       @save="controlsEvent('save', $event)"
       @switchTheme="controlsEvent('switchTheme', $event)"
+      @execution="controlsEvent('execution', $event)"
       @toolbarItemClick="toolbarItemClick"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { MarkerType } from "@vue-flow/core";
-
 const nodes = ref([
   {
     id: "test1",
