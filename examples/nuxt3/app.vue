@@ -46,6 +46,7 @@
       :node-toolbar-show-copy="true"
       edge-type="smoothStep"
       :default-edge-style="defaultEdgeStyle"
+      :default-marker-style="defaultMarkerStyle"
       @undo="controlsEvent('undo', $event)"
       @redo="controlsEvent('redo', $event)"
       @screenShot="controlsEvent('screenShot')"
@@ -113,6 +114,11 @@ const defaultHandleStyle = {
 const defaultEdgeStyle = {
   stroke: "gray",
   strokeWidth: "2px"
+};
+
+const defaultMarkerStyle = {
+  markerStart: { type: "arrow", color: "gray" },
+  markerEnd: { type: "arrowclosed", color: "gray" }
 };
 
 const controlsEvent = (eventName: string, event?: Event) => {

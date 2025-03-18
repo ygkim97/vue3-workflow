@@ -9,7 +9,7 @@
     :snap-to-grid="true"
     :snap-grid="props.snapGrid as [number, number]"
     :connection-line-options="{}"
-    :default-edge-options="{}"
+    :default-edge-options="defaultMarkerStyle"
   >
     <Background
       :bg-color="props.bgColor"
@@ -79,9 +79,9 @@
 </template>
 
 <script lang="ts" setup>
-import { type PanelPositionType, Position, VueFlow } from "@vue-flow/core";
+import { Position, VueFlow } from "@vue-flow/core";
 import type { PropType } from "vue";
-import type { Node, Edge } from "@vue-flow/core";
+import type { Node, Edge, PanelPositionType } from "@vue-flow/core";
 import GraphData1 from "../graph-data/graph-data-1.json";
 
 import Background from "./custom/background.vue";
@@ -272,6 +272,10 @@ const props = defineProps({
     default: "default"
   },
   defaultEdgeStyle: {
+    type: Object,
+    default: () => {}
+  },
+  defaultMarkerStyle: {
     type: Object,
     default: () => {}
   }
