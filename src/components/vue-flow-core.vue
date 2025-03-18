@@ -9,7 +9,6 @@
     :snap-to-grid="true"
     :snap-grid="props.snapGrid as [number, number]"
     :connection-line-options="{}"
-    :default-edge-options="defaultMarkerStyle"
   >
     <Background
       :bg-color="props.bgColor"
@@ -59,6 +58,7 @@
         :node-type-key="props.nodeTypeKey"
         :default-node-style="props.defaultNodeStyle"
         :default-handle-style="props.defaultHandleStyle"
+        :select-node-style="props.selectNodeStyle"
         :use-node-toolbar="props.useNodeToolbar"
         :node-toolbar-position="props.nodeToolbarPosition"
         :node-toolbar-offset="props.nodeToolbarOffset"
@@ -76,6 +76,8 @@
         v-bind="customEdgeProps"
         :edge-type="props.edgeType"
         :default-edge-style="props.defaultEdgeStyle"
+        :select-edge-style="props.selectEdgeStyle"
+        :marker-type="props.markerType"
       ></CustomEdge>
     </template>
   </VueFlow>
@@ -238,9 +240,11 @@ const props = defineProps({
   },
   defaultNodeStyle: {
     type: Object,
-    default: () => {
-      return {};
-    }
+    default: () => {}
+  },
+  selectNodeStyle: {
+    type: Object,
+    default: () => {}
   },
   defaultHandleStyle: {
     type: Object,
@@ -286,7 +290,11 @@ const props = defineProps({
     type: Object,
     default: () => {}
   },
-  defaultMarkerStyle: {
+  selectEdgeStyle: {
+    type: Object,
+    default: () => {}
+  },
+  markerType: {
     type: Object,
     default: () => {}
   }

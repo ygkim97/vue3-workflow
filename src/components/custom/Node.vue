@@ -10,8 +10,7 @@
       </button>
     </template>
   </NodeToolbar>
-  <!-- TODO: 선택 노드 스타일 적용 -->
-  <div :class="`vue-flow__node-${nodeType}`" :style="props.defaultNodeStyle">
+  <div :class="`vue-flow__node-${nodeType}`" :style="nodeStyle">
     <Handle v-if="nodeType !== 'input'" type="target" :position="Position.Left" :style="props.defaultHandleStyle" />
     <div>{{ nodeLabel }}</div>
     <Handle v-if="nodeType !== 'output'" type="source" :position="Position.Right" :style="props.defaultHandleStyle" />
@@ -20,9 +19,11 @@
 
 <script lang="ts" setup>
 import { ref, computed, type PropType } from "vue";
-import { Handle, Position } from "@vue-flow/core";
+import { Handle, Position, useVueFlow } from "@vue-flow/core";
 import { NodeToolbar } from "@vue-flow/node-toolbar";
 import SvgICon from "../common/svgICon.vue";
+
+const { findNode } = useVueFlow();
 
 const props = defineProps({
   id: {
@@ -42,6 +43,10 @@ const props = defineProps({
     default: "type"
   },
   defaultNodeStyle: {
+    type: Object,
+    default: () => {}
+  },
+  selectNodeStyle: {
     type: Object,
     default: () => {}
   },
@@ -87,9 +92,18 @@ const emit = defineEmits<{
   (e: "toolbarItemClick", item: object): void;
 }>();
 
+const nodeStyle = computed(() => {
+  const node = findNode(props.id);
+  return {
+    ...props.defaultNodeStyle,
+    ...(node && node.selected ? props.selectNodeStyle : {})
+  };
+});
+
 const nodeLabel = computed(() => {
   return props.data?.[props.nodeLabelKey];
 });
+
 const nodeType = ref(props.data?.[props.nodeTypeKey] || "default");
 
 const toolbarItemList = [

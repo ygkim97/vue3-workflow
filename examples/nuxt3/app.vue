@@ -37,6 +37,7 @@
       node-label-key="name"
       node-type-key="nodeType"
       :default-node-style="defaultNodeStyle"
+      :select-node-style="selectNodeStyle"
       :default-handle-style="defaultHandleStyle"
       :use-node-toolbar="true"
       node-toolbar-position="bottom"
@@ -48,7 +49,8 @@
       :node-toolbar-show-execution="true"
       edge-type="smoothStep"
       :default-edge-style="defaultEdgeStyle"
-      :default-marker-style="defaultMarkerStyle"
+      :select-edge-style="selectEdgeStyle"
+      :marker-type="markerType"
       @undo="controlsEvent('undo', $event)"
       @redo="controlsEvent('redo', $event)"
       @screenShot="controlsEvent('screenShot')"
@@ -102,6 +104,19 @@ const defaultNodeStyle = {
   borderRadius: "30px"
 };
 
+const selectNodeStyle = {
+  backgroundColor: "navy",
+  width: "100px",
+  height: "10px",
+  color: "white",
+  fontSize: "10px",
+  fontWeight: "bold",
+  borderStyle: "solid",
+  borderColor: "navy",
+  borderWidth: "2px",
+  borderRadius: "30px"
+};
+
 const defaultHandleStyle = {
   backgroundColor: "white",
   width: "5px",
@@ -117,9 +132,14 @@ const defaultEdgeStyle = {
   strokeWidth: "2px"
 };
 
-const defaultMarkerStyle = {
-  markerStart: { type: "arrow", color: "gray" },
-  markerEnd: { type: "arrowclosed", color: "gray" }
+const selectEdgeStyle = {
+  stroke: "navy",
+  strokeWidth: "3px"
+};
+
+const markerType = {
+  markerStart: "arrow",
+  markerEnd: "arrowclosed"
 };
 
 const controlsEvent = (eventName: string, event?: Event) => {

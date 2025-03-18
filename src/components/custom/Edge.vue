@@ -2,7 +2,7 @@
   <component
     :is="edgeComponents[props.edgeType] || BezierEdge"
     :id="id"
-    :style="defaultEdgeStyle"
+    :style="edgeStyle"
     :source-x="props.sourceX"
     :source-y="props.sourceY"
     :target-x="props.targetX"
@@ -12,12 +12,12 @@
   />
 </template>
 
-export default { inheritAttrs: false };
-
 <script lang="ts" setup>
-import type { Component } from "vue";
-import { SmoothStepEdge, StepEdge, BezierEdge, StraightEdge } from "@vue-flow/core";
+import { type Component, computed } from "vue";
+import { SmoothStepEdge, StepEdge, BezierEdge, StraightEdge, useVueFlow } from "@vue-flow/core";
 import type { Position } from "@vue-flow/core";
+
+const { findEdge } = useVueFlow();
 
 const props = defineProps({
   id: {
@@ -48,7 +48,35 @@ const props = defineProps({
   defaultEdgeStyle: {
     type: Object,
     default: () => {}
+  },
+  selectEdgeStyle: {
+    type: Object,
+    default: () => {}
+  },
+  markerType: {
+    type: Object,
+    default: () => {}
   }
+});
+
+const edgeStyle = computed(() => {
+  const edge = findEdge(props.id);
+  if (!edge) return {};
+
+  const isSelected = edge.selected;
+  const strokeColor = isSelected ? props.selectEdgeStyle?.stroke : props.defaultEdgeStyle?.stroke || "";
+
+  if (props.markerType?.markerStart) {
+    edge.markerStart = { type: props.markerType.markerStart, color: strokeColor };
+  }
+  if (props.markerType?.markerEnd) {
+    edge.markerEnd = { type: props.markerType.markerEnd, color: strokeColor };
+  }
+
+  return {
+    ...props.defaultEdgeStyle,
+    ...(edge && edge.selected ? props.selectEdgeStyle : {})
+  };
 });
 
 const edgeComponents: Record<string, Component> = {
