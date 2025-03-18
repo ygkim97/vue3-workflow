@@ -44,6 +44,8 @@
       :node-toolbar-show-delete="true"
       :node-toolbar-show-edit="true"
       :node-toolbar-show-copy="true"
+      edge-type="smoothStep"
+      :default-edge-style="defaultEdgeStyle"
       @undo="controlsEvent('undo', $event)"
       @redo="controlsEvent('redo', $event)"
       @screenShot="controlsEvent('screenShot')"
@@ -74,14 +76,18 @@ const nodes = ref([
 const edges = ref([
   {
     id: "e1-2",
-    type: "step",
+    type: "custom",
     source: "test1",
     target: "test2",
-    markerEnd: MarkerType.ArrowClosed
+    label: "Label",
+    labelStyle: { fill: "navy" },
+    labelBgStyle: { fill: "white" },
+    labelBgPadding: [4, 2],
+    labelBgBorderRadius: 4
   }
 ]);
 
-const defaultNodeStyle = ref({
+const defaultNodeStyle = {
   backgroundColor: "white",
   width: "100px",
   height: "10px",
@@ -92,9 +98,9 @@ const defaultNodeStyle = ref({
   borderColor: "navy",
   borderWidth: "2px",
   borderRadius: "30px"
-});
+};
 
-const defaultHandleStyle = ref({
+const defaultHandleStyle = {
   backgroundColor: "white",
   width: "5px",
   height: "5px",
@@ -102,7 +108,12 @@ const defaultHandleStyle = ref({
   borderColor: "navy",
   borderWidth: "2px",
   borderRadius: "100%"
-});
+};
+
+const defaultEdgeStyle = {
+  stroke: "gray",
+  strokeWidth: "2px"
+};
 
 const controlsEvent = (eventName: string, event?: Event) => {
   console.log(eventName, event);

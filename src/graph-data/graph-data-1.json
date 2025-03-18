@@ -34,13 +34,19 @@
   "edges": [
     {
       "id": "e1-2",
-      "type": "step",
+      "type": "custom",
       "source": "test1",
-      "target": "test2"
+      "target": "test2",
+      "label": "Label",
+      "labelStyle": {},
+      "labelBgStyle": {},
+      "labelBgPadding": [8, 4],
+      "labelBgBorderRadius": 4,
+      "style": {}
     },
     {
       "id": "e2-4",
-      "type": "step",
+      "type": "custom",
       "source": "test2",
       "target": "test4"
     }

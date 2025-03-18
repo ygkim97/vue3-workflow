@@ -67,6 +67,14 @@
         @toolbarItemClick="$emit('toolbarItemClick', $event)"
       />
     </template>
+
+    <template #edge-custom="customEdgeProps">
+      <CustomEdge
+        v-bind="customEdgeProps"
+        :edge-type="props.edgeType"
+        :default-edge-style="props.defaultEdgeStyle"
+      ></CustomEdge>
+    </template>
   </VueFlow>
 </template>
 
@@ -80,6 +88,7 @@ import Background from "./custom/background.vue";
 import MiniMap from "./custom/MiniMap.vue";
 import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
+import CustomEdge from "./custom/Edge.vue";
 
 const props = defineProps({
   id: {
@@ -257,6 +266,14 @@ const props = defineProps({
   nodeToolbarShowCopy: {
     type: Boolean,
     default: true
+  },
+  edgeType: {
+    type: String,
+    default: "default"
+  },
+  defaultEdgeStyle: {
+    type: Object,
+    default: () => {}
   }
 });
 </script>
