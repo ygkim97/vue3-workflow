@@ -45,6 +45,7 @@
       :node-toolbar-show-delete="true"
       :node-toolbar-show-edit="true"
       :node-toolbar-show-copy="true"
+      :node-toolbar-show-execution="true"
       edge-type="smoothStep"
       :default-edge-style="defaultEdgeStyle"
       :default-marker-style="defaultMarkerStyle"

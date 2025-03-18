@@ -76,6 +76,10 @@ const props = defineProps({
   nodeToolbarShowCopy: {
     type: Boolean,
     default: true
+  },
+  nodeToolbarShowExecution: {
+    type: Boolean,
+    default: true
   }
 });
 
@@ -92,7 +96,8 @@ const toolbarItemList = [
   { id: "add", iconName: "plus", isVisible: props.nodeToolbarShowAdd },
   { id: "delete", iconName: "trash", isVisible: props.nodeToolbarShowDelete },
   { id: "edit", iconName: "pen-to-square", isVisible: props.nodeToolbarShowEdit },
-  { id: "copy", iconName: "copy", isVisible: props.nodeToolbarShowCopy }
+  { id: "copy", iconName: "copy", isVisible: props.nodeToolbarShowCopy },
+  { id: "execution", iconName: "play", isVisible: props.nodeToolbarShowExecution }
 ];
 
 // TODO: 노드 추가, 삭제, 수정 기능 추가
