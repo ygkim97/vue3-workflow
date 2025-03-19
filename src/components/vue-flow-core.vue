@@ -71,6 +71,7 @@
         :node-toolbar-show-edit="props.nodeToolbarShowEdit"
         :node-toolbar-show-copy="props.nodeToolbarShowCopy"
         :node-toolbar-show-execution="props.nodeToolbarShowExecution"
+        :snap-grid="props.snapGrid"
         @toolbarItemClick="$emit('toolbarItemClick', $event)"
       />
     </template>

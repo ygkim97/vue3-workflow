@@ -5,7 +5,7 @@
     :offset="props.nodeToolbarOffset"
   >
     <template v-for="item in toolbarItemList">
-      <button v-if="item.isVisible" :key="item.id" type="button" @click="toolbarItemClick(id)">
+      <button v-if="item.isVisible" :key="item.id" type="button" @click="toolbarItemClick(item.id)">
         <SvgICon :name="item.iconName"></SvgICon>
       </button>
     </template>
@@ -20,10 +20,14 @@
 <script lang="ts" setup>
 import { ref, computed, type PropType } from "vue";
 import { Handle, Position, useVueFlow } from "@vue-flow/core";
+import type { Node } from "@vue-flow/core";
 import { NodeToolbar } from "@vue-flow/node-toolbar";
 import SvgICon from "../common/svgICon.vue";
+import { v4 as uuidv4 } from "uuid";
+import useFlowCommon from "../../composables/useFlowCommon.ts";
 
-const { findNode } = useVueFlow();
+const { findNode, addNodes, getNodes, getEdges } = useVueFlow();
+const { deleteElements, findAvailablePosition } = useFlowCommon();
 
 const props = defineProps({
   id: {
@@ -85,6 +89,12 @@ const props = defineProps({
   nodeToolbarShowExecution: {
     type: Boolean,
     default: true
+  },
+  snapGrid: {
+    type: Array as PropType<number[]>,
+    default: () => {
+      return [15, 15];
+    }
   }
 });
 
@@ -114,9 +124,40 @@ const toolbarItemList = [
   { id: "execution", iconName: "play", isVisible: props.nodeToolbarShowExecution }
 ];
 
-// TODO: 노드 추가, 삭제, 수정 기능 추가
 const toolbarItemClick = (id: string) => {
-  emit("toolbarItemClick", { id });
+  // TODO: NodeToolbar 이벤트 전달방식 고려
+  const selectedNode: Node | undefined = findNode(props.id);
+  if (!selectedNode) return;
+
+  let params: any = {};
+
+  if (id === "add") {
+    params = {
+      id: uuidv4(),
+      type: "custom",
+      position: findAvailablePosition(props.snapGrid as [number, number], selectedNode.position),
+      data: { [props.nodeLabelKey]: "Node" }
+    };
+    addNodes(params);
+  } else if (id === "delete") {
+    if (confirm("삭제하시겠습니까?")) {
+      params = deleteElements();
+    }
+  } else if (id === "edit") {
+    params = selectedNode;
+  } else if (id === "copy") {
+    params = {
+      ...selectedNode,
+      id: uuidv4(),
+      position: findAvailablePosition(props.snapGrid as [number, number], selectedNode.position),
+      selected: false
+    };
+    addNodes(params);
+  } else if (id === "execution") {
+    // TODO: nodePath 데이터 전달
+    params = { nodes: getNodes.value, edges: getEdges.value };
+  }
+  emit("toolbarItemClick", { id, params });
 };
 </script>
 

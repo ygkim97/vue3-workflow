@@ -1,7 +1,8 @@
 import { useVueFlow } from "@vue-flow/core";
+import type { XYPosition } from "@vue-flow/core";
 
 export default function useDragAndDrop() {
-  const { getSelectedNodes, getSelectedEdges, getConnectedEdges, removeNodes, removeEdges } = useVueFlow();
+  const { getSelectedNodes, getSelectedEdges, getConnectedEdges, removeNodes, removeEdges, getNodes } = useVueFlow();
 
   const deleteElements = () => {
     const nextNodeChanges: any = [];
@@ -33,7 +34,24 @@ export default function useDragAndDrop() {
     }
   };
 
+  const findAvailablePosition = (snapGrid: [number, number], basePosition: XYPosition) => {
+    const snapGridX = snapGrid[0];
+    let newX = basePosition.x + snapGridX;
+
+    while (getNodeByPosition({ x: newX, y: basePosition.y })) {
+      // NOTE: 우측으로만 Position 검색
+      newX += snapGridX;
+    }
+
+    return { x: newX, y: basePosition.y };
+  };
+
+  const getNodeByPosition = (position: { x: number; y: number }) => {
+    return getNodes.value.find((node) => node.position.x === position.x && node.position.y === position.y) || null;
+  };
+
   return {
+    findAvailablePosition,
     deleteElements
   };
 }
