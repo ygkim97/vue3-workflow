@@ -94,6 +94,7 @@ import type { PropType } from "vue";
 import type { Node, Edge, PanelPositionType } from "@vue-flow/core";
 import GraphData1 from "../graph-data/graph-data-1.json";
 import { v4 as uuidv4 } from "uuid";
+import useFlowCommon from "../composables/useFlowCommon.ts";
 
 import Background from "./custom/background.vue";
 import MiniMap from "./custom/MiniMap.vue";
@@ -101,16 +102,8 @@ import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
-const {
-  addEdges,
-  getSelectedEdges,
-  getSelectedNodes,
-  findNode,
-  findEdge,
-  getConnectedEdges,
-  removeNodes,
-  removeEdges
-} = useVueFlow();
+const { addEdges, findNode, findEdge } = useVueFlow();
+const { deleteElements } = useFlowCommon();
 
 const props = defineProps({
   id: {
@@ -343,32 +336,9 @@ const onConnect = (edge: any) => {
 };
 
 const onDelete = () => {
-  const nextNodeChanges: any = [];
-  const nextEdgeChanges: any = [];
-  const nodeIds: string[] = [];
-  let edgeIds: string[] = [];
-
-  getSelectedNodes.value.forEach((el) => {
-    nextNodeChanges.push({ id: el.id, type: "remove" });
-
-    nodeIds.push(el.id);
-    getConnectedEdges(el.id).forEach((edge) => {
-      edgeIds.push(edge.id);
-    });
-  });
-
-  getSelectedEdges.value.forEach((el) => {
-    nextEdgeChanges.push({ id: el.id, type: "remove" });
-    edgeIds.push(el.id);
-  });
-
-  // TODO: confirm modal
-  if (confirm("삭제하시겠습니까?")) {
-    removeNodes(nextNodeChanges);
-    removeEdges(nextEdgeChanges);
-
-    edgeIds = [...new Set(edgeIds)];
-    emit("delete", { nodeIds, edgeIds });
+  const deletedElements = deleteElements();
+  if (deletedElements) {
+    emit("delete", deletedElements);
   }
 };
 
