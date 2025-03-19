@@ -89,12 +89,6 @@ const props = defineProps({
   nodeToolbarShowExecution: {
     type: Boolean,
     default: true
-  },
-  snapGrid: {
-    type: Array as PropType<number[]>,
-    default: () => {
-      return [15, 15];
-    }
   }
 });
 
@@ -135,7 +129,7 @@ const toolbarItemClick = (id: string) => {
     params = {
       id: uuidv4(),
       type: "custom",
-      position: findAvailablePosition(props.snapGrid as [number, number], selectedNode.position),
+      position: findAvailablePosition(selectedNode.position),
       data: { [props.nodeLabelKey]: "Node" }
     };
     addNodes(params);
@@ -149,7 +143,7 @@ const toolbarItemClick = (id: string) => {
     params = {
       ...selectedNode,
       id: uuidv4(),
-      position: findAvailablePosition(props.snapGrid as [number, number], selectedNode.position),
+      position: findAvailablePosition(selectedNode.position),
       selected: false
     };
     addNodes(params);

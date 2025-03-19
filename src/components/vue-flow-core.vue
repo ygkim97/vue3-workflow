@@ -73,7 +73,6 @@
         :node-toolbar-show-edit="props.nodeToolbarShowEdit"
         :node-toolbar-show-copy="props.nodeToolbarShowCopy"
         :node-toolbar-show-execution="props.nodeToolbarShowExecution"
-        :snap-grid="props.snapGrid"
         @toolbarItemClick="$emit('toolbarItemClick', $event)"
       />
     </template>
@@ -91,7 +90,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import { Position, VueFlow, useVueFlow } from "@vue-flow/core";
 import type { PropType } from "vue";
 import type { Node, Edge, PanelPositionType } from "@vue-flow/core";
@@ -106,7 +105,7 @@ import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
 const { addEdges, findNode, findEdge } = useVueFlow();
-const { deleteElements, onNodesChange, onNodeDragStop } = useFlowCommon();
+const { setSnapGrid, deleteElements, onNodesChange, onNodeDragStop } = useFlowCommon();
 
 const props = defineProps({
   id: {
@@ -333,6 +332,14 @@ const emit = defineEmits<{
   (e: "toolbarItemClick", item: object): void;
   (e: "delete", item: object): void;
 }>();
+
+setSnapGrid(props.snapGrid as [number, number]);
+watch(
+  () => props.snapGrid,
+  (value) => {
+    setSnapGrid(value as [number, number]);
+  }
+);
 
 const onConnect = (edge: any) => {
   addEdges({ id: uuidv4(), type: "custom", source: edge.source, target: edge.target });
