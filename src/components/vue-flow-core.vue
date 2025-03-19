@@ -8,6 +8,7 @@
     :snap-to-grid="true"
     :snap-grid="props.snapGrid as [number, number]"
     :connection-line-options="{}"
+    :delete-key-code="null"
     @connect="onConnect"
   >
     <Background
@@ -84,6 +85,7 @@
 </template>
 
 <script lang="ts" setup>
+import { onMounted } from "vue";
 import { Position, VueFlow, useVueFlow } from "@vue-flow/core";
 import type { PropType } from "vue";
 import type { Node, Edge, PanelPositionType } from "@vue-flow/core";
@@ -96,7 +98,7 @@ import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
-const { addEdges } = useVueFlow();
+const { addEdges, getSelectedEdges, getSelectedNodes, applyNodeChanges, applyEdgeChanges } = useVueFlow();
 
 const props = defineProps({
   id: {
@@ -316,6 +318,33 @@ const props = defineProps({
 const onConnect = (edge: any) => {
   addEdges({ id: uuidv4(), type: "custom", source: edge.source, target: edge.target });
 };
+
+const onDelete = () => {
+  const nextNodeChanges: any = [];
+  const nextEdgeChanges: any = [];
+  getSelectedNodes.value.forEach((el) => {
+    nextNodeChanges.push({ id: el.id, type: "remove" });
+  });
+
+  getSelectedEdges.value.forEach((el) => {
+    nextEdgeChanges.push({ id: el.id, type: "remove" });
+  });
+
+  // TODO: confirm modal
+  if (confirm("삭제하시겠습니까?")) {
+    applyNodeChanges(nextNodeChanges);
+    applyEdgeChanges(nextEdgeChanges);
+  }
+};
+
+onMounted(() => {
+  // NOTE: 'Delete' 키를 누를 때 onDelete 함수가 실행되도록 설정
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Delete") {
+      onDelete();
+    }
+  });
+});
 </script>
 
 <style>
