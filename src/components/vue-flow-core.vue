@@ -1,6 +1,5 @@
 <template>
   <VueFlow
-    :id="props.id"
     :nodes="props.nodes"
     :edges="props.edges"
     :fit-view-on-init="true"
@@ -9,6 +8,7 @@
     :snap-to-grid="true"
     :snap-grid="props.snapGrid as [number, number]"
     :connection-line-options="{}"
+    @connect="onConnect"
   >
     <Background
       :bg-color="props.bgColor"
@@ -84,16 +84,19 @@
 </template>
 
 <script lang="ts" setup>
-import { Position, VueFlow } from "@vue-flow/core";
+import { Position, VueFlow, useVueFlow } from "@vue-flow/core";
 import type { PropType } from "vue";
 import type { Node, Edge, PanelPositionType } from "@vue-flow/core";
 import GraphData1 from "../graph-data/graph-data-1.json";
+import { v4 as uuidv4 } from "uuid";
 
 import Background from "./custom/background.vue";
 import MiniMap from "./custom/MiniMap.vue";
 import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
+
+const { addEdges } = useVueFlow();
 
 const props = defineProps({
   id: {
@@ -309,6 +312,10 @@ const props = defineProps({
     default: () => {}
   }
 });
+
+const onConnect = (edge: any) => {
+  addEdges({ id: uuidv4(), type: "custom", source: edge.source, target: edge.target });
+};
 </script>
 
 <style>
