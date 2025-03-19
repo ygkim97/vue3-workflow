@@ -58,6 +58,7 @@
       @switchTheme="controlsEvent('switchTheme', $event)"
       @execution="controlsEvent('execution', $event)"
       @toolbarItemClick="toolbarItemClick"
+      @delete="onDelete"
     />
   </div>
 </template>
@@ -148,6 +149,11 @@ const controlsEvent = (eventName: string, event?: Event) => {
 
 const toolbarItemClick = (event: { id: string }) => {
   console.log(event);
+};
+
+const onDelete = ({ nodeIds, edgeIds }: { nodeIds: string[]; edgeIds: string[] }) => {
+  console.log("delete nodeIds: ", nodeIds);
+  console.log("delete edgeIds: ", edgeIds);
 };
 </script>
 

@@ -101,8 +101,16 @@ import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
-const { addEdges, getSelectedEdges, getSelectedNodes, applyNodeChanges, applyEdgeChanges, findNode, findEdge } =
-  useVueFlow();
+const {
+  addEdges,
+  getSelectedEdges,
+  getSelectedNodes,
+  findNode,
+  findEdge,
+  getConnectedEdges,
+  removeNodes,
+  removeEdges
+} = useVueFlow();
 
 const props = defineProps({
   id: {
@@ -319,6 +327,17 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits<{
+  (e: "undo", item: object): void;
+  (e: "redo", item: object): void;
+  (e: "screenShot"): void;
+  (e: "save", item: object): void;
+  (e: "execution", item: object): void;
+  (e: "switchTheme", item: object): void;
+  (e: "toolbarItemClick", item: object): void;
+  (e: "delete", item: object): void;
+}>();
+
 const onConnect = (edge: any) => {
   addEdges({ id: uuidv4(), type: "custom", source: edge.source, target: edge.target });
 };
@@ -326,18 +345,30 @@ const onConnect = (edge: any) => {
 const onDelete = () => {
   const nextNodeChanges: any = [];
   const nextEdgeChanges: any = [];
+  const nodeIds: string[] = [];
+  let edgeIds: string[] = [];
+
   getSelectedNodes.value.forEach((el) => {
     nextNodeChanges.push({ id: el.id, type: "remove" });
+
+    nodeIds.push(el.id);
+    getConnectedEdges(el.id).forEach((edge) => {
+      edgeIds.push(edge.id);
+    });
   });
 
   getSelectedEdges.value.forEach((el) => {
     nextEdgeChanges.push({ id: el.id, type: "remove" });
+    edgeIds.push(el.id);
   });
 
   // TODO: confirm modal
   if (confirm("삭제하시겠습니까?")) {
-    applyNodeChanges(nextNodeChanges);
-    applyEdgeChanges(nextEdgeChanges);
+    removeNodes(nextNodeChanges);
+    removeEdges(nextEdgeChanges);
+
+    edgeIds = [...new Set(edgeIds)];
+    emit("delete", { nodeIds, edgeIds });
   }
 };
 
