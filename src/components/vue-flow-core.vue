@@ -1,4 +1,5 @@
 <template>
+  <!-- ISSUE: selection-key-code / 문서에서는 KeyCode 입력이 가능하다고 되어 있으나, 실제로는 boolean 또는 null만 입력할 수 있다는 경고 발생, vue-flow git 이슈확인필요 -->
   <VueFlow
     :nodes="props.nodes"
     :edges="props.edges"
@@ -9,6 +10,8 @@
     :snap-grid="props.snapGrid as [number, number]"
     :connection-line-options="{}"
     :delete-key-code="null"
+    selection-key-code="Control"
+    multi-selection-key-code="Control"
     @connect="onConnect"
   >
     <Background
@@ -98,7 +101,8 @@ import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
-const { addEdges, getSelectedEdges, getSelectedNodes, applyNodeChanges, applyEdgeChanges } = useVueFlow();
+const { addEdges, getSelectedEdges, getSelectedNodes, applyNodeChanges, applyEdgeChanges, findNode, findEdge } =
+  useVueFlow();
 
 const props = defineProps({
   id: {
@@ -344,6 +348,27 @@ onMounted(() => {
       onDelete();
     }
   });
+
+  // NOTE: 'Control' 키 입력시, contextmenu 차단
+  document.addEventListener("contextmenu", (event) => {
+    if (event.ctrlKey) {
+      event.preventDefault(); // 컨텍스트 메뉴 차단
+
+      const target = event.target as HTMLElement;
+      const nodeEl = target.closest(".vue-flow__node");
+      if (nodeEl) {
+        const nodeId = nodeEl.getAttribute("data-id");
+        const node = findNode(nodeId);
+        if (node) node.selected = !node.selected;
+      }
+      const edgeEl = target.closest(".vue-flow__edge");
+      if (edgeEl) {
+        const edgeId = edgeEl.getAttribute("data-id") as string;
+        const edge = findEdge(edgeId);
+        if (edge) edge.selected = !edge.selected;
+      }
+    }
+  });
 });
 </script>
 
@@ -356,5 +381,10 @@ body,
 #app {
   margin: 0;
   height: 100%;
+}
+
+.vue-flow__nodesselection-rect {
+  border: none;
+  width: 0 !important;
 }
 </style>
