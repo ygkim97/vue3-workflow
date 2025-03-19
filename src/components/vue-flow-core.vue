@@ -13,6 +13,8 @@
     selection-key-code="Control"
     multi-selection-key-code="Control"
     @connect="onConnect"
+    @nodes-change="onNodesChange"
+    @nodeDragStop="onNodeDragStop"
   >
     <Background
       :bg-color="props.bgColor"
@@ -104,7 +106,7 @@ import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
 const { addEdges, findNode, findEdge } = useVueFlow();
-const { deleteElements } = useFlowCommon();
+const { deleteElements, onNodesChange, onNodeDragStop } = useFlowCommon();
 
 const props = defineProps({
   id: {
