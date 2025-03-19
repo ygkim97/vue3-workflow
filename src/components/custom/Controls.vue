@@ -28,10 +28,13 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
+import { useVueFlow } from "@vue-flow/core";
 import { ControlButton, Controls } from "@vue-flow/controls";
 import type { PropType } from "vue";
 import type { PanelPositionType } from "@vue-flow/core";
 import SvgICon from "../common/svgICon.vue";
+
+const { getNodes, getEdges } = useVueFlow();
 
 const props = defineProps({
   useControl: {
@@ -106,14 +109,13 @@ const screenShotBtnClick = () => {
   emit("screenShot");
 };
 
-// TODO: Nodes, Edges Data 전달 기능 구현
 const saveBtnClick = () => {
-  emit("save", { nodes: [], edges: [] });
+  emit("save", { nodes: getNodes.value, edges: getEdges.value });
 };
 
-// TODO: Node 전체 실행
 const executionBtnClick = () => {
-  emit("execution", { graph: [] });
+  // TODO: nodePath 기능 추가
+  emit("execution", { nodes: getNodes.value, edges: getEdges.value });
 };
 
 const themeBtnClick = () => {

@@ -244,7 +244,12 @@ const props = defineProps({
   },
   selectNodeStyle: {
     type: Object,
-    default: () => {}
+    default: () => {
+      return {
+        backgroundColor: "navy",
+        color: "white"
+      };
+    }
   },
   defaultHandleStyle: {
     type: Object,
@@ -292,7 +297,12 @@ const props = defineProps({
   },
   selectEdgeStyle: {
     type: Object,
-    default: () => {}
+    default: () => {
+      return {
+        stroke: "navy",
+        strokeWidth: "2px"
+      };
+    }
   },
   markerType: {
     type: Object,
