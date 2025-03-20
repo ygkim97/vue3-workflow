@@ -33,8 +33,10 @@ import { ControlButton, Controls } from "@vue-flow/controls";
 import type { PropType } from "vue";
 import type { PanelPositionType } from "@vue-flow/core";
 import SvgICon from "../common/svgICon.vue";
+import useScreenshot from "../../composables/useScreenshot.ts";
 
-const { getNodes, getEdges } = useVueFlow();
+const { getNodes, getEdges, vueFlowRef } = useVueFlow();
+const { capture } = useScreenshot();
 
 const props = defineProps({
   useControl: {
@@ -104,8 +106,9 @@ const redoBtnClick = () => {
   emit("redo", {});
 };
 
-// TODO: ScreenShot 기능 구현
+// TODO: ScreenShot 기능 구현 - 기능 오류
 const screenShotBtnClick = () => {
+  capture(vueFlowRef.value as HTMLElement, { shouldDownload: true });
   emit("screenShot");
 };
 
