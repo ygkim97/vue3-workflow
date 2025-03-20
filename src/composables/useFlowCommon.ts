@@ -120,10 +120,12 @@ export default function useFlowCommon() {
   };
 
   return {
+    snapGrid,
     setSnapGrid,
     deleteElements,
     findAvailablePosition,
     onNodesChange,
-    onNodeDragStop
+    onNodeDragStop,
+    getNodeByPosition
   };
 }

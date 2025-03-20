@@ -15,6 +15,9 @@
     @connect="onConnect"
     @nodes-change="onNodesChange"
     @nodeDragStop="onNodeDragStop"
+    @dragover="onDragOver"
+    @dragleave="onDragLeave"
+    @drop="onDrop"
   >
     <Background
       :bg-color="props.bgColor"
@@ -97,6 +100,7 @@ import type { Node, Edge, PanelPositionType } from "@vue-flow/core";
 import GraphData1 from "../graph-data/graph-data-1.json";
 import { v4 as uuidv4 } from "uuid";
 import useFlowCommon from "../composables/useFlowCommon.ts";
+import useDragAndDrop from "../composables/useDragAndDrop.ts";
 
 import Background from "./custom/background.vue";
 import MiniMap from "./custom/MiniMap.vue";
@@ -106,6 +110,11 @@ import CustomEdge from "./custom/Edge.vue";
 
 const { addEdges, findNode, findEdge } = useVueFlow();
 const { setSnapGrid, deleteElements, onNodesChange, onNodeDragStop } = useFlowCommon();
+const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
+
+watch(isDragOver, (value) => {
+  emit("draggingOver", value);
+});
 
 const props = defineProps({
   id: {
@@ -319,6 +328,10 @@ const props = defineProps({
   markerType: {
     type: Object,
     default: () => {}
+  },
+  dragStartEvent: {
+    type: Object as () => { event: any; data?: object },
+    default: () => {}
   }
 });
 
@@ -331,6 +344,7 @@ const emit = defineEmits<{
   (e: "switchTheme", item: object): void;
   (e: "toolbarItemClick", item: object): void;
   (e: "delete", item: object): void;
+  (e: "draggingOver", item: boolean): void;
 }>();
 
 setSnapGrid(props.snapGrid as [number, number]);
@@ -339,6 +353,14 @@ watch(
   (value) => {
     setSnapGrid(value as [number, number]);
   }
+);
+
+watch(
+  () => props.dragStartEvent,
+  (value: { event: any; data?: object }) => {
+    onDragStart(value);
+  },
+  { deep: true }
 );
 
 const onConnect = (edge: any) => {

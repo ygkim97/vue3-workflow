@@ -1,7 +1,6 @@
 <template>
-  <!-- TODO: sidebar 에서 dragAndDrop 으로 node 추가시 테스트 필요 -->
   <Background
-    :style="{ backgroundColor: bgColor }"
+    :style="{ backgroundColor: props.bgColor, transition: 'background-color 0.2s ease' }"
     variant="dots"
     :gap="props.bgPatternGap"
     :size="showBgPattern ? props.bgPatternSize : 0"
