@@ -4,7 +4,7 @@ import type { XYPosition, Node } from "@vue-flow/core";
 
 const state = {
   snapGrid: ref<[number, number]>([15, 15]),
-  lastNodeEventData: ref<Node[]>([])
+  lastNodeEventData: ref<{ id: string; from?: XYPosition }[]>([])
 };
 
 export default function useFlowCommon() {
@@ -101,8 +101,10 @@ export default function useFlowCommon() {
    */
   const resetNodePositionIfOccupied = (nodes: Node[]) => {
     const originNodePositionMap: { [key: string]: XYPosition } = lastNodeEventData.value.reduce(
-      (acc, node) => {
-        acc[node.id] = node.position;
+      (acc, node: { id: string; from?: XYPosition }) => {
+        if (node.from) {
+          acc[node.id] = node.from;
+        }
         return acc;
       },
       {} as { [key: string]: XYPosition }
