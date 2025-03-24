@@ -65,11 +65,14 @@
         @draggingOver="onDraggingOver"
       />
     </div>
+
+    <Modal v-if="isShowModal" :data="editData" @close="isShowModal = false"></Modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import Sidebar from "./components/Sidebar.vue";
+import Modal from "./components/Modal.vue";
 import { ref } from "vue";
 
 const nodes = ref([
@@ -156,6 +159,9 @@ const markerType = {
   markerEnd: "arrowclosed"
 };
 
+const isShowModal = ref(false);
+const editData = ref({});
+
 const controlsEvent = (eventName: string, event?: Event) => {
   if (event) {
     console.log(eventName, event);
@@ -164,8 +170,12 @@ const controlsEvent = (eventName: string, event?: Event) => {
   }
 };
 
-const toolbarItemClick = (event: { id: string }) => {
+const toolbarItemClick = (event: { id: string; params: any }) => {
   console.log(event);
+  if (event.id === "edit") {
+    isShowModal.value = true;
+    editData.value = event.params;
+  }
 };
 
 const onDelete = ({ nodeIds, edgeIds }: { nodeIds: string[]; edgeIds: string[] }) => {
