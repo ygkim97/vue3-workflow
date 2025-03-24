@@ -33,9 +33,11 @@ import { ControlButton, Controls } from "@vue-flow/controls";
 import type { PropType } from "vue";
 import type { PanelPositionType } from "@vue-flow/core";
 import SvgICon from "../common/svgICon.vue";
+import useFlowCommon from "../../composables/useFlowCommon.ts";
 import useScreenshot from "../../composables/useScreenshot.ts";
 
 const { getNodes, getEdges, vueFlowRef } = useVueFlow();
+const { executeUndo, executeRedo } = useFlowCommon();
 const { capture } = useScreenshot();
 
 const props = defineProps({
@@ -86,8 +88,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "undo", item: object): void;
-  (e: "redo", item: object): void;
+  (e: "undo"): void;
+  (e: "redo"): void;
   (e: "screenShot"): void;
   (e: "save", item: object): void;
   (e: "execution", item: object): void;
@@ -96,14 +98,14 @@ const emit = defineEmits<{
 
 const theme = ref("light");
 
-// TODO: Undo 동작 수행 기능 구현
 const undoBtnClick = () => {
-  emit("undo", {});
+  executeUndo();
+  emit("undo");
 };
 
-// TODO: Redo 동작 수행 기능 구현
 const redoBtnClick = () => {
-  emit("redo", {});
+  executeRedo();
+  emit("redo");
 };
 
 // TODO: ScreenShot 기능 구현 - 기능 오류

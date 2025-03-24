@@ -108,8 +108,8 @@ import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
-const { addEdges, findNode, findEdge } = useVueFlow();
-const { setSnapGrid, deleteElements, onNodesChange, onNodeDragStop } = useFlowCommon();
+const { findNode, findEdge } = useVueFlow();
+const { setSnapGrid, initHistoryStack, deleteElements, onNodesChange, onNodeDragStop, addEdge } = useFlowCommon();
 const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
 
 watch(isDragOver, (value) => {
@@ -336,8 +336,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "undo", item: object): void;
-  (e: "redo", item: object): void;
+  (e: "undo"): void;
+  (e: "redo"): void;
   (e: "screenShot"): void;
   (e: "save", item: object): void;
   (e: "execution", item: object): void;
@@ -364,7 +364,7 @@ watch(
 );
 
 const onConnect = (edge: any) => {
-  addEdges({ id: uuidv4(), type: "custom", source: edge.source, target: edge.target });
+  addEdge({ id: uuidv4(), type: "custom", source: edge.source, target: edge.target });
 };
 
 const onDelete = () => {
@@ -402,6 +402,8 @@ onMounted(() => {
       }
     }
   });
+
+  initHistoryStack({ nodes: props.nodes, edges: props.edges });
 });
 </script>
 

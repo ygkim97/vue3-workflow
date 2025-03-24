@@ -1,19 +1,54 @@
 import { ref } from "vue";
 import { useVueFlow } from "@vue-flow/core";
-import type { XYPosition, Node } from "@vue-flow/core";
+import type { XYPosition, Node, Edge } from "@vue-flow/core";
+
+interface History {
+  actionType: string;
+  nodes?: Node[] | undefined;
+  edges?: Edge[] | undefined;
+  origin?: Node[] | undefined;
+  change?: Node[] | undefined;
+}
 
 const state = {
   snapGrid: ref<[number, number]>([15, 15]),
-  lastNodeEventData: ref<{ id: string; from?: XYPosition }[]>([])
+  lastNodeEventData: ref<{ id: string; from?: XYPosition }[]>([]),
+  historyStack: ref<History[]>([]),
+  currentStackKey: ref<number>(0)
 };
 
 export default function useFlowCommon() {
-  const { snapGrid, lastNodeEventData } = state;
-  const { getSelectedNodes, getSelectedEdges, getConnectedEdges, removeNodes, removeEdges, getNodes, updateNode } =
-    useVueFlow();
+  const { snapGrid, lastNodeEventData, historyStack, currentStackKey } = state;
+  const {
+    getSelectedNodes,
+    getSelectedEdges,
+    getConnectedEdges,
+    addNodes,
+    removeNodes,
+    addEdges,
+    removeEdges,
+    getNodes,
+    updateNode
+  } = useVueFlow();
 
   const setSnapGrid = (data: [number, number]) => {
     snapGrid.value = data;
+  };
+
+  const initHistoryStack = ({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) => {
+    historyStack.value = [{ actionType: "init", nodes, edges }];
+  };
+
+  const addNode = (nodes: Node) => {
+    addNodes(nodes);
+    // NOTE: Node 추가한 경우, historyStack 에 추가
+    pushHistory({ actionType: "add", nodes: [nodes] });
+  };
+
+  const addEdge = (edges: Edge) => {
+    addEdges(edges);
+    // NOTE: Edge 추가한 경우, historyStack 에 추가
+    pushHistory({ actionType: "add", edges: [edges] });
   };
 
   /**
@@ -23,6 +58,7 @@ export default function useFlowCommon() {
     const nextNodeChanges: any = [];
     const nextEdgeChanges: any = [];
     const nodeIds: string[] = [];
+    const connectedEdges: Edge[] = [];
     let edgeIds: string[] = [];
 
     getSelectedNodes.value.forEach((el) => {
@@ -31,6 +67,7 @@ export default function useFlowCommon() {
       nodeIds.push(el.id);
       getConnectedEdges(el.id).forEach((edge) => {
         edgeIds.push(edge.id);
+        connectedEdges.push(edge);
       });
     });
 
@@ -41,10 +78,18 @@ export default function useFlowCommon() {
 
     // TODO: confirm modal
     if (confirm("삭제하시겠습니까?")) {
+      // NOTE:  Node/Edge 삭제한 경우, historyStack 에 추가
+      pushHistory({
+        actionType: "delete",
+        nodes: getSelectedNodes.value,
+        edges: [...getSelectedEdges.value, ...connectedEdges]
+      });
+
       removeNodes(nextNodeChanges);
       removeEdges(nextEdgeChanges);
 
       edgeIds = [...new Set(edgeIds)];
+
       return { nodeIds, edgeIds };
     }
   };
@@ -114,20 +159,98 @@ export default function useFlowCommon() {
       return getNodeByPosition({ nodeId: node.id, position: node.position }) !== null;
     });
 
-    if (isNodePositionOccupied) {
-      nodes.forEach((node) => {
-        updateNode(node.id, { position: originNodePositionMap[node.id] });
+    const changeNodePositionList: Node[] = [];
+    const originNodePositionList: Node[] = nodes.map(({ id, position }) => {
+      changeNodePositionList.push({ id, position });
+      const originPosition = { position: originNodePositionMap[id] };
+      if (isNodePositionOccupied) {
+        updateNode(id, originPosition);
+      }
+      return { id, ...originPosition };
+    });
+
+    // NOTE: Node position 이동한 경우, historyStack 에 추가
+    if (!isNodePositionOccupied) {
+      pushHistory({ actionType: "position", origin: originNodePositionList, change: changeNodePositionList });
+    }
+  };
+
+  const pushHistory = (history: History) => {
+    historyStack.value.push(history);
+    currentStackKey.value++;
+  };
+
+  const executeUndo = () => {
+    if (currentStackKey.value === 0) {
+      return;
+    }
+
+    const { actionType, nodes, edges, origin }: History = historyStack.value[currentStackKey.value--];
+    if (actionType === "position" && origin) {
+      origin.forEach((node: Node) => {
+        updateNode(node.id, { position: node.position });
       });
+    } else if (actionType === "add") {
+      if (nodes) {
+        removeNodes(nodes);
+      }
+      if (edges) {
+        removeEdges(edges);
+      }
+    } else if (actionType === "delete") {
+      if (nodes) {
+        addNodes(nodes);
+      }
+      if (edges) {
+        addEdges(edges);
+      }
+    } else if (actionType === "edit") {
+      // TODO: Node change
+    }
+  };
+
+  const executeRedo = () => {
+    // TODO: history 중간에 동작이 추가된 경우 어떻게 할것인가...
+    if (historyStack.value.length === currentStackKey.value + 1) {
+      return;
+    }
+
+    const { actionType, nodes, edges, change }: History = historyStack.value[++currentStackKey.value];
+    if (actionType === "position" && change) {
+      change.forEach((node: Node) => {
+        updateNode(node.id, { position: node.position });
+      });
+    } else if (actionType === "add") {
+      if (nodes) {
+        addNodes(nodes);
+      }
+      if (edges) {
+        addEdges(edges);
+      }
+    } else if (actionType === "delete") {
+      if (nodes) {
+        removeNodes(nodes);
+      }
+      if (edges) {
+        removeEdges(edges);
+      }
+    } else if (actionType === "edit") {
+      // TODO: Node change
     }
   };
 
   return {
     snapGrid,
+    initHistoryStack,
     setSnapGrid,
+    addNode,
+    addEdge,
     deleteElements,
     findAvailablePosition,
     onNodesChange,
     onNodeDragStop,
-    getNodeByPosition
+    getNodeByPosition,
+    executeUndo,
+    executeRedo
   };
 }

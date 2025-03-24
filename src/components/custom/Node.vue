@@ -26,8 +26,8 @@ import SvgICon from "../common/svgICon.vue";
 import { v4 as uuidv4 } from "uuid";
 import useFlowCommon from "../../composables/useFlowCommon.ts";
 
-const { findNode, addNodes, getNodes, getEdges } = useVueFlow();
-const { deleteElements, findAvailablePosition } = useFlowCommon();
+const { findNode, getNodes, getEdges } = useVueFlow();
+const { addNode, deleteElements, findAvailablePosition } = useFlowCommon();
 
 const props = defineProps({
   id: {
@@ -132,7 +132,7 @@ const toolbarItemClick = (id: string) => {
       position: findAvailablePosition(selectedNode.position),
       data: { [props.nodeLabelKey]: "Node" }
     };
-    addNodes(params);
+    addNode(params);
   } else if (id === "delete") {
     params = deleteElements();
     if (!params) return;
@@ -145,7 +145,7 @@ const toolbarItemClick = (id: string) => {
       position: findAvailablePosition(selectedNode.position),
       selected: false
     };
-    addNodes(params);
+    addNode(params);
   } else if (id === "execution") {
     // TODO: nodePath 데이터 전달
     params = { nodes: getNodes.value, edges: getEdges.value };

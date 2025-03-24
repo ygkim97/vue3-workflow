@@ -157,7 +157,11 @@ const markerType = {
 };
 
 const controlsEvent = (eventName: string, event?: Event) => {
-  console.log(eventName, event);
+  if (event) {
+    console.log(eventName, event);
+  } else {
+    console.log(eventName);
+  }
 };
 
 const toolbarItemClick = (event: { id: string }) => {
