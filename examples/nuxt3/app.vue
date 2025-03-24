@@ -2,8 +2,9 @@
   <div class="nuxt-work-flow">
     <header>Nuxt - Work Flow Test</header>
     <div class="work-flow" v-if="isMounted">
-      <Sidebar @drag-start="onDragStart"></Sidebar>
+      <Sidebar @dragStart="onDragStart"></Sidebar>
       <VueFlowCore
+        ref="vueFlowCoreRef"
         id="nuxtVueFlow"
         :nodes="nodes"
         :edges="edges"
@@ -66,7 +67,7 @@
       />
     </div>
 
-    <Modal v-if="isShowModal" :data="editData" @close="isShowModal = false"></Modal>
+    <Modal v-if="isShowModal" :data="editData" @updateNode="updateNode" @close="isShowModal = false"></Modal>
   </div>
 </template>
 
@@ -79,8 +80,22 @@ interface DagData {
   id: string;
   name: string;
   description: string;
-  nodes: object[];
-  edges: object[];
+  nodes: Node[];
+  edges: Edge[];
+}
+
+interface Node {
+  id: string;
+  type: string;
+  position: { x: number; y: number };
+  data?: Record<string, any>;
+}
+
+interface Edge {
+  id: string;
+  type: string;
+  source: string;
+  target: string;
 }
 
 onMounted(() => {
@@ -89,16 +104,23 @@ onMounted(() => {
 
 const dagData = ref<Partial<DagData>>({});
 const getNodes = async () => {
-  const res = await $fetch<{ data: DagData }>("http://192.168.107.19:5052/api/v1/dag/dag_dGVzdDAwMQ");
+  const res = await $fetch<{ success: boolean; data: DagData }>("http://192.168.107.19:5052/api/v1/dag/dag_dGVzdDAwMQ");
   if (res.success) {
     dagData.value = res.data;
-    nodes.value = dagData.value.nodes;
-    edges.value = dagData.value.edges;
+    nodes.value = dagData.value.nodes ?? [];
+    edges.value = dagData.value.edges ?? [];
   }
 };
 
-const nodes = ref([]);
-const edges = ref([]);
+const vueFlowCoreRef = ref<{ editNode(data: Node): void } | null>(null);
+const updateNode = (data: Node) => {
+  if (vueFlowCoreRef.value) {
+    vueFlowCoreRef.value.editNode(data);
+  }
+};
+
+const nodes = ref<Node[]>([]);
+const edges = ref<Edge[]>([]);
 
 const dragStartEvent = ref({});
 const isDragOver = ref(false);

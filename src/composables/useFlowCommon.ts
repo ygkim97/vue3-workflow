@@ -51,6 +51,10 @@ export default function useFlowCommon() {
     pushHistory({ actionType: "add", edges: [edges] });
   };
 
+  const updateNodeData = (data: Node) => {
+    updateNode(data.id, data);
+  };
+
   /**
    * 현재 선택된 노드 및 엣지 삭제 함수
    */
@@ -246,6 +250,7 @@ export default function useFlowCommon() {
     initHistoryStack,
     setSnapGrid,
     addNode,
+    updateNodeData,
     addEdge,
     deleteElements,
     findAvailablePosition,

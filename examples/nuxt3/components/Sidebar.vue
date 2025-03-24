@@ -2,7 +2,7 @@
 import { onMounted, ref, nextTick, defineEmits } from "vue";
 
 const emit = defineEmits<{
-  (e: "dragStart", item: object): void;
+  (e: "dragStart", item: { event: any; data?: object }): void;
 }>();
 
 const contentRefs = ref<any[]>([]);
@@ -47,7 +47,6 @@ const onDragStart = ({
   data: { id: string; name: string; inputs: object[]; output: object };
 }) => {
   const { id, name, inputs, output } = data;
-  console.log(data);
   emit("dragStart", { event, data: { function_id: id, label: name, inputs, output } });
 };
 

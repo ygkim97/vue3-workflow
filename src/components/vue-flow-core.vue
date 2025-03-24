@@ -109,7 +109,8 @@ import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
 const { findNode, findEdge } = useVueFlow();
-const { setSnapGrid, initHistoryStack, deleteElements, onNodesChange, onNodeDragStop, addEdge } = useFlowCommon();
+const { setSnapGrid, initHistoryStack, deleteElements, onNodesChange, onNodeDragStop, addEdge, updateNodeData } =
+  useFlowCommon();
 const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
 
 watch(isDragOver, (value) => {
@@ -373,6 +374,15 @@ const onDelete = () => {
     emit("delete", deletedElements);
   }
 };
+
+// TODO: 함수로 사용하도록 가능할까...
+const changeNode = (node: Node) => {
+  updateNodeData(node);
+};
+
+defineExpose({
+  changeNode
+});
 
 onMounted(() => {
   // NOTE: 'Delete' 키를 누를 때 onDelete 함수가 실행되도록 설정

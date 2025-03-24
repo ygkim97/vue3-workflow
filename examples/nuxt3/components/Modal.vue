@@ -10,6 +10,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: "close"): void;
+  (e: "updateNode", item: object): void;
 }>();
 
 const nodeLabel = ref<string>("");
@@ -22,16 +23,16 @@ const close = () => {
 const change = () => {
   if (props.data && confirm("변경된 내용이 저장됩니다. 계속하시겠습니까?")) {
     const { id, type, position, data } = props.data;
-    const changeData = { ...data, name: nodeLabel.value, description: nodeDesc.value };
-    // TODO: nodeUpdate
+    const changeData = { ...data, label: nodeLabel.value, description: nodeDesc.value };
+    emit("updateNode", { id, type, position, data: changeData });
     close();
   }
 };
 
 onMounted(() => {
   if (props.data) {
-    const { name, description } = props.data.data;
-    nodeLabel.value = name;
+    const { label, description } = props.data.data;
+    nodeLabel.value = label;
     nodeDesc.value = description || "";
   }
 });
@@ -52,6 +53,7 @@ onMounted(() => {
               <label for="label">Label</label>
               <input type="text" id="label" placeholder="label" v-model="nodeLabel" />
             </div>
+            <!-- TODO: 데이터 inputs 에 맞게 form 유형 변경 -->
             <div class="input-group">
               <label for="description">Description</label>
               <textarea id="description" placeholder="description" v-model="nodeDesc"></textarea>
