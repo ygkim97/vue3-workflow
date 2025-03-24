@@ -1,12 +1,21 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, nextTick, defineEmits } from "vue";
+
+const emit = defineEmits<{
+  (e: "dragStart", item: object): void;
+}>();
 
 const contentRefs = ref<any[]>([]);
 const contentHeights = ref<{ [key: string]: number }>({});
-const accordionItems = ref<{ id: string; label: string }[]>([
-  { id: "nodeDataControls", label: "Node & Data Controls (Button)" },
-  { id: "nodeCollection", label: "Node Collection (Drag)" },
-  { id: "scrollTest", label: "Contents Overflow Scroll Test" }
+const defaultItem = [
+  { name: "Input Node", type: "input" },
+  { name: "Default Node", type: "default" },
+  { name: "Oupput Node", type: "output" }
+];
+const accordionItems = ref<{ id: string; label: string; item: object[] }[]>([
+  { id: "node001", label: "Node API TEST", item: [] },
+  { id: "node002", label: "Node TEST 001", item: defaultItem },
+  { id: "node003", label: "Node TEST 002", item: defaultItem }
 ]);
 const accordionState = ref<{ [key: string]: boolean }>({});
 
@@ -17,9 +26,12 @@ const initializeAccordionState = () => {
 };
 
 const updateContentHeight = () => {
-  contentRefs.value.forEach((content) => {
-    const id = content.id;
-    contentHeights.value[id] = content.scrollHeight;
+  nextTick(() => {
+    contentRefs.value.forEach((content) => {
+      if (content) {
+        contentHeights.value[content.id] = content.scrollHeight;
+      }
+    });
   });
 };
 
@@ -27,9 +39,28 @@ const toggleAccordion = (id: string) => {
   accordionState.value[id] = !accordionState.value[id];
 };
 
-onMounted(() => {
+const onDragStart = ({
+  event,
+  data
+}: {
+  event: Event;
+  data: { id: string; name: string; inputs: object[]; output: object };
+}) => {
+  const { id, name, inputs, output } = data;
+  console.log(data);
+  emit("dragStart", { event, data: { function_id: id, label: name, inputs, output } });
+};
+
+onMounted(async () => {
+  const res: { success: boolean; data: object[] } = await $fetch("http://192.168.107.19:5052/api/v1/udf");
+  if (res.success) {
+    accordionItems.value[0].item = res.data;
+
+    await nextTick();
+    updateContentHeight();
+  }
+
   initializeAccordionState();
-  updateContentHeight();
 });
 </script>
 
@@ -56,24 +87,29 @@ onMounted(() => {
         >
           <div class="vue-flow__accordion-body">
             <div class="vue-flow__drag-group">
-              <div
+              <template v-for="nodeItem in item.item">
+                <div :draggable="true" @dragstart="onDragStart({ event: $event, data: nodeItem })">
+                  {{ nodeItem.name }}
+                </div>
+              </template>
+              <!--              <div
                 :draggable="true"
-                @dragstart="$emit('dragStart', { event: $event, data: { name: 'TEST01', type: 'input' } })"
+                @dragstart="$emit('dragStart', { event: $event, data: { label: 'TEST01', type: 'input' } })"
               >
                 Input Node
               </div>
               <div
                 :draggable="true"
-                @dragstart="$emit('dragStart', { event: $event, data: { name: 'TEST02', type: 'output' } })"
+                @dragstart="$emit('dragStart', { event: $event, data: { label: 'TEST02', type: 'default' } })"
               >
                 Default Node
               </div>
               <div
                 :draggable="true"
-                @dragstart="$emit('dragStart', { event: $event, data: { name: 'TEST03', type: 'output' } })"
+                @dragstart="$emit('dragStart', { event: $event, data: { label: 'TEST03', type: 'output' } })"
               >
                 Output Node
-              </div>
+              </div>-->
             </div>
           </div>
         </div>
