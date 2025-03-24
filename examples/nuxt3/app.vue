@@ -36,8 +36,8 @@
         :control-show-theme="true"
         :control-show-save="true"
         :control-show-execution="true"
-        node-label-key="name"
-        node-type-key="nodeType"
+        node-label-key="label"
+        node-type-key="type"
         :default-node-style="defaultNodeStyle"
         :select-node-style="selectNodeStyle"
         :default-handle-style="defaultHandleStyle"
@@ -73,30 +73,32 @@
 <script lang="ts" setup>
 import Sidebar from "./components/Sidebar.vue";
 import Modal from "./components/Modal.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
-const nodes = ref([
-  {
-    id: "test1",
-    type: "custom",
-    position: { x: 100, y: 100 },
-    data: { name: "Start", nodeType: "input" }
-  },
-  {
-    id: "test2",
-    type: "custom",
-    position: { x: 400, y: 100 },
-    data: { name: "Process" }
+interface DagData {
+  id: string;
+  name: string;
+  description: string;
+  nodes: object[];
+  edges: object[];
+}
+
+onMounted(() => {
+  getNodes();
+});
+
+const dagData = ref<Partial<DagData>>({});
+const getNodes = async () => {
+  const res = await $fetch<{ data: DagData }>("http://192.168.107.19:5052/api/v1/dag/dag_dGVzdDAwMQ");
+  if (res.success) {
+    dagData.value = res.data;
+    nodes.value = dagData.value.nodes;
+    edges.value = dagData.value.edges;
   }
-]);
-const edges = ref([
-  {
-    id: "e1-2",
-    type: "custom",
-    source: "test1",
-    target: "test2"
-  }
-]);
+};
+
+const nodes = ref([]);
+const edges = ref([]);
 
 const dragStartEvent = ref({});
 const isDragOver = ref(false);
@@ -162,11 +164,19 @@ const markerType = {
 const isShowModal = ref(false);
 const editData = ref({});
 
-const controlsEvent = (eventName: string, event?: Event) => {
+const controlsEvent = async (eventName: string, event?: any) => {
   if (event) {
     console.log(eventName, event);
   } else {
     console.log(eventName);
+  }
+
+  if (eventName === "save") {
+    // TODO: 아직 수정 API 없음. 해당 API 는 생성 API
+    /*await $fetch("http://192.168.107.19:5052/api/v1/dag", {
+      method: "POST",
+      body: { name: "test001", description: "SAVE TEST", nodes: event.nodes, edges: event.edges }
+    });*/
   }
 };
 
