@@ -134,9 +134,8 @@ const toolbarItemClick = (id: string) => {
     };
     addNodes(params);
   } else if (id === "delete") {
-    if (confirm("삭제하시겠습니까?")) {
-      params = deleteElements();
-    }
+    params = deleteElements();
+    if (!params) return;
   } else if (id === "edit") {
     params = selectedNode;
   } else if (id === "copy") {
