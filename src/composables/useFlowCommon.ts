@@ -176,8 +176,11 @@ export default function useFlowCommon() {
   };
 
   const pushHistory = (history: History) => {
-    historyStack.value.push(history);
     currentStackKey.value++;
+    if (historyStack.value[currentStackKey.value]) {
+      historyStack.value.splice(currentStackKey.value);
+    }
+    historyStack.value.push(history);
   };
 
   const executeUndo = () => {
@@ -210,7 +213,6 @@ export default function useFlowCommon() {
   };
 
   const executeRedo = () => {
-    // TODO: history 중간에 동작이 추가된 경우 어떻게 할것인가...
     if (historyStack.value.length === currentStackKey.value + 1) {
       return;
     }
