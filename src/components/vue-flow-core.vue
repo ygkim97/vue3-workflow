@@ -89,7 +89,18 @@
 
     <template #edge-custom="customEdgeProps">
       <CustomEdge
-        v-bind="customEdgeProps"
+        :id="customEdgeProps.id"
+        :source-x="customEdgeProps.sourceX"
+        :source-y="customEdgeProps.sourceY"
+        :target-x="customEdgeProps.targetX"
+        :target-y="customEdgeProps.targetY"
+        :source-position="customEdgeProps.sourcePosition"
+        :target-position="customEdgeProps.targetPosition"
+        :label="customEdgeProps.label"
+        :labelBgBorderRadius="customEdgeProps.labelBgBorderRadius"
+        :labelBgPadding="customEdgeProps.labelBgPadding"
+        :labelBgStyle="customEdgeProps.labelBgStyle"
+        :labelStyle="customEdgeProps.labelStyle"
         :edge-type="props.edgeType"
         :default-edge-style="props.defaultEdgeStyle"
         :select-edge-style="props.selectEdgeStyle"
