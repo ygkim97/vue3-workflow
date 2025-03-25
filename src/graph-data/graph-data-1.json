@@ -38,6 +38,9 @@
       "source": "test1",
       "target": "test2",
       "label": "Label",
+      "data": {
+        "test": "test edge data"
+      },
       "labelStyle": {},
       "labelBgStyle": {},
       "labelBgPadding": [8, 4],
@@ -48,7 +51,8 @@
       "id": "e2-4",
       "type": "custom",
       "source": "test2",
-      "target": "test4"
+      "target": "test4",
+      "data": {}
     }
   ]
 }

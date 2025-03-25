@@ -158,7 +158,8 @@ const defaultNodeStyle = {
   borderStyle: "solid",
   borderColor: "navy",
   borderWidth: "1px",
-  borderRadius: "30px"
+  borderRadius: "30px",
+  opacity: 0.5
 };
 
 const selectNodeStyle = {
