@@ -38,7 +38,6 @@
       :mini-map-pannable="props.miniMapPannable"
       :mini-map-zoomable="props.miniMapZoomable"
     />
-    <!-- TODO: Control 추가 기능 구현 -->
     <Controls
       :use-control="props.useControl"
       :control-position="props.controlPosition"
@@ -57,7 +56,11 @@
       @save="$emit('save', $event)"
       @execution="$emit('execution', $event)"
       @switchTheme="$emit('switchTheme', $event)"
-    ></Controls>
+    >
+      <template #controls>
+        <slot name="controls" :data="{ nodes: getNodes, edges: getEdges }"></slot>
+      </template>
+    </Controls>
 
     <template #node-custom="customNodeProps">
       <CustomNode
@@ -112,7 +115,7 @@ import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
-const { findNode, findEdge } = useVueFlow();
+const { findNode, findEdge, getNodes, getEdges } = useVueFlow();
 const { setSnapGrid, initHistoryStack, deleteElements, onNodesChange, onNodeDragStop, addEdge, updateNodeData } =
   useFlowCommon();
 const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
@@ -367,14 +370,17 @@ const onDelete = () => {
   }
 };
 
-// TODO: 함수로 사용하도록 가능할까...
 const changeNode = (node: Node) => {
   updateNodeData(node);
 };
 
+import { ControlButton } from "@vue-flow/controls";
+
+// TODO: 함수로 사용가능하게 가능할까..
 defineExpose({
   changeNode,
-  onDragStart
+  onDragStart,
+  controlButton: ControlButton
 });
 
 onMounted(() => {

@@ -24,6 +24,7 @@
     <ControlButton v-if="props.controlShowTheme" @click="themeBtnClick">
       <SvgICon :name="theme === 'light' ? 'moon' : 'sun'"></SvgICon>
     </ControlButton>
+    <slot name="controls"></slot>
   </Controls>
 </template>
 <script lang="ts" setup>

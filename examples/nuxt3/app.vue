@@ -64,6 +64,11 @@
         @delete="onDelete"
         @draggingOver="onDraggingOver"
       >
+        <template #controls="{ data }">
+          <component v-if="vueFlowCoreRef" :is="vueFlowCoreRef.controlButton" @click="controlsTest(data)">
+            <img src="./assets/icon/square-check.svg" alt="" width="16" />
+          </component>
+        </template>
         <template #nodeToolbar="{ data }">
           <button @click="nodeToolbarTest(data)">
             <img src="./assets/icon/square-check.svg" alt="" />
@@ -120,6 +125,7 @@ const getNodes = async () => {
 const vueFlowCoreRef = ref<{
   changeNode(data: Node): void;
   onDragStart(data: { event: any; data?: object }): void;
+  controlButton: any;
 } | null>(null);
 const updateNode = (data: Node) => {
   if (vueFlowCoreRef.value) {
@@ -232,8 +238,12 @@ const onDraggingOver = (dragOver: boolean) => {
   isDragOver.value = dragOver;
 };
 
-const nodeToolbarTest = (data) => {
+const nodeToolbarTest = (data: any) => {
   console.log("nodeToolbarTest", data);
+};
+
+const controlsTest = (data: any) => {
+  console.log("controlsTest", data);
 };
 
 // ISSUE: Vue의 Hydration Mismatch 문제로 warm console. SSR 관련? 확인필요
