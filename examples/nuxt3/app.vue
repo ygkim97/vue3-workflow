@@ -54,7 +54,6 @@
         :default-edge-style="defaultEdgeStyle"
         :select-edge-style="selectEdgeStyle"
         :marker-type="markerType"
-        :dragStartEvent="dragStartEvent"
         @undo="controlsEvent('undo', $event)"
         @redo="controlsEvent('redo', $event)"
         @screenShot="controlsEvent('screenShot')"
@@ -112,17 +111,19 @@ const getNodes = async () => {
   }
 };
 
-const vueFlowCoreRef = ref<{ editNode(data: Node): void } | null>(null);
+const vueFlowCoreRef = ref<{
+  changeNode(data: Node): void;
+  onDragStart(data: { event: any; data?: object }): void;
+} | null>(null);
 const updateNode = (data: Node) => {
   if (vueFlowCoreRef.value) {
-    vueFlowCoreRef.value.editNode(data);
+    vueFlowCoreRef.value.changeNode(data);
   }
 };
 
 const nodes = ref<Node[]>([]);
 const edges = ref<Edge[]>([]);
 
-const dragStartEvent = ref({});
 const isDragOver = ref(false);
 
 watch(
@@ -217,7 +218,9 @@ const onDelete = ({ nodeIds, edgeIds }: { nodeIds: string[]; edgeIds: string[] }
 
 // NOTE: Sidebar DragAndDrop
 const onDragStart = (event: { event: any; data?: object }) => {
-  dragStartEvent.value = event;
+  if (vueFlowCoreRef.value) {
+    vueFlowCoreRef.value.onDragStart(event);
+  }
 };
 const onDraggingOver = (dragOver: boolean) => {
   isDragOver.value = dragOver;

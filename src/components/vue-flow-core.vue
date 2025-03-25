@@ -329,10 +329,6 @@ const props = defineProps({
   markerType: {
     type: Object,
     default: () => {}
-  },
-  dragStartEvent: {
-    type: Object as () => { event: any; data?: object },
-    default: () => {}
   }
 });
 
@@ -356,14 +352,6 @@ watch(
   }
 );
 
-watch(
-  () => props.dragStartEvent,
-  (value: { event: any; data?: object }) => {
-    onDragStart(value);
-  },
-  { deep: true }
-);
-
 const onConnect = (edge: any) => {
   addEdge({ id: uuidv4(), type: "custom", source: edge.source, target: edge.target });
 };
@@ -381,7 +369,8 @@ const changeNode = (node: Node) => {
 };
 
 defineExpose({
-  changeNode
+  changeNode,
+  onDragStart
 });
 
 onMounted(() => {
