@@ -89,11 +89,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "undo"): void;
-  (e: "redo"): void;
-  (e: "screenShot"): void;
   (e: "save", item: object): void;
-  (e: "execution", item: object): void;
+  (e: "executionAll", item: object): void;
   (e: "switchTheme", item: object): void;
 }>();
 
@@ -101,18 +98,15 @@ const theme = ref("light");
 
 const undoBtnClick = () => {
   executeUndo();
-  emit("undo");
 };
 
 const redoBtnClick = () => {
   executeRedo();
-  emit("redo");
 };
 
 // TODO: ScreenShot 기능 구현 - 기능 오류
 const screenShotBtnClick = () => {
   capture(vueFlowRef.value as HTMLElement, { shouldDownload: true });
-  emit("screenShot");
 };
 
 const saveBtnClick = () => {

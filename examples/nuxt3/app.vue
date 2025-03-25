@@ -55,12 +55,9 @@
           :default-edge-style="defaultEdgeStyle"
           :select-edge-style="selectEdgeStyle"
           :marker-type="markerType"
-          @undo="controlsEvent('undo', $event)"
-          @redo="controlsEvent('redo', $event)"
-          @screenShot="controlsEvent('screenShot')"
           @save="controlsEvent('save', $event)"
           @switchTheme="controlsEvent('switchTheme', $event)"
-          @execution="controlsEvent('execution', $event)"
+          @executionAll="controlsEvent('executionAll', $event)"
           @toolbarItemClick="toolbarItemClick"
           @delete="onDelete"
           @draggingOver="onDraggingOver"
@@ -203,18 +200,14 @@ const isShowModal = ref(false);
 const editData = ref({});
 
 const controlsEvent = async (eventName: string, event?: any) => {
-  if (event) {
-    console.log(eventName, event);
-  } else {
-    console.log(eventName);
-  }
+  console.log(eventName, event);
 
   if (eventName === "save") {
-    // TODO: 아직 수정 API 없음. 해당 API 는 생성 API
-    /*await $fetch("http://192.168.107.19:5052/api/v1/dag", {
-      method: "POST",
-      body: { name: "test001", description: "SAVE TEST", nodes: event.nodes, edges: event.edges }
-    });*/
+    const { id, name, description } = dagData.value;
+    await $fetch(`http://192.168.107.19:5052/api/v1/dag/${id}`, {
+      method: "PATCH",
+      body: { name, description, nodes: event.nodes, edges: event.edges }
+    });
   }
 };
 

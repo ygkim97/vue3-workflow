@@ -46,8 +46,9 @@ const onDragStart = ({
   event: Event;
   data: { id: string; name: string; inputs: object[]; output: object };
 }) => {
-  const { id, name, inputs, output } = data;
-  emit("dragStart", { event, data: { function_id: id, label: name, inputs, output } });
+  // TODO: inputs default 값 설정
+  const { id, name, inputs } = data;
+  emit("dragStart", { event, data: { function_id: id, label: name } });
 };
 
 onMounted(async () => {

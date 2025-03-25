@@ -50,11 +50,8 @@
       :control-show-theme="props.controlShowTheme"
       :control-show-save="props.controlShowSave"
       :control-show-execution="props.controlShowExecution"
-      @undo="$emit('undo', $event)"
-      @redo="$emit('redo', $event)"
-      @screenShot="$emit('screenShot')"
       @save="$emit('save', $event)"
-      @execution="$emit('execution', $event)"
+      @executionAll="$emit('executionAll', $event)"
       @switchTheme="$emit('switchTheme', $event)"
     >
       <template #controls>
@@ -351,11 +348,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "undo"): void;
-  (e: "redo"): void;
-  (e: "screenShot"): void;
   (e: "save", item: object): void;
-  (e: "execution", item: object): void;
+  (e: "executionAll", item: object): void;
   (e: "switchTheme", item: object): void;
   (e: "toolbarItemClick", item: object): void;
   (e: "delete", item: object): void;
