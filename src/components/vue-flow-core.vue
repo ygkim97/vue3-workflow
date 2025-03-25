@@ -77,7 +77,11 @@
         :node-toolbar-show-copy="props.nodeToolbarShowCopy"
         :node-toolbar-show-execution="props.nodeToolbarShowExecution"
         @toolbarItemClick="$emit('toolbarItemClick', $event)"
-      />
+      >
+        <template #nodeToolbar>
+          <slot name="nodeToolbar" :data="customNodeProps"></slot>
+        </template>
+      </CustomNode>
     </template>
 
     <template #edge-custom="customEdgeProps">

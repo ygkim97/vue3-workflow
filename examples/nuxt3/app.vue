@@ -63,7 +63,13 @@
         @toolbarItemClick="toolbarItemClick"
         @delete="onDelete"
         @draggingOver="onDraggingOver"
-      />
+      >
+        <template #nodeToolbar="{ data }">
+          <button @click="nodeToolbarTest(data)">
+            <img src="./assets/icon/square-check.svg" alt="" />
+          </button>
+        </template>
+      </VueFlowCore>
     </div>
 
     <Modal v-if="isShowModal" :data="editData" @updateNode="updateNode" @close="isShowModal = false"></Modal>
@@ -224,6 +230,10 @@ const onDragStart = (event: { event: any; data?: object }) => {
 };
 const onDraggingOver = (dragOver: boolean) => {
   isDragOver.value = dragOver;
+};
+
+const nodeToolbarTest = (data) => {
+  console.log("nodeToolbarTest", data);
 };
 
 // ISSUE: Vue의 Hydration Mismatch 문제로 warm console. SSR 관련? 확인필요

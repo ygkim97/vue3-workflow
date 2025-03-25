@@ -9,6 +9,7 @@
         <SvgICon :name="item.iconName"></SvgICon>
       </button>
     </template>
+    <slot name="nodeToolbar"></slot>
   </NodeToolbar>
   <div :class="`vue-flow__node-${nodeType}`" :style="nodeStyle">
     <Handle v-if="nodeType !== 'input'" type="target" :position="Position.Left" :style="props.defaultHandleStyle" />
@@ -115,7 +116,8 @@ const toolbarItemList = [
   { id: "delete", iconName: "trash", isVisible: props.nodeToolbarShowDelete },
   { id: "edit", iconName: "pen-to-square", isVisible: props.nodeToolbarShowEdit },
   { id: "copy", iconName: "copy", isVisible: props.nodeToolbarShowCopy },
-  { id: "execution", iconName: "play", isVisible: props.nodeToolbarShowExecution }
+  { id: "execution", iconName: "play", isVisible: props.nodeToolbarShowExecution },
+  { id: "execution", iconName: "play" }
 ];
 
 const toolbarItemClick = (id: string) => {
@@ -179,7 +181,8 @@ const toolbarItemClick = (id: string) => {
   background: lightgray;
 }
 
-.vue-flow__node-toolbar button svg {
+.vue-flow__node-toolbar button svg,
+.vue-flow__node-toolbar button img {
   width: 30px;
   height: 30px;
   fill: black;
