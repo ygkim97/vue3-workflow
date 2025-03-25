@@ -28,7 +28,8 @@ export default function useFlowCommon() {
     addEdges,
     removeEdges,
     getNodes,
-    updateNode
+    updateNode,
+    findNode
   } = useVueFlow();
 
   const setSnapGrid = (data: [number, number]) => {
@@ -52,7 +53,10 @@ export default function useFlowCommon() {
   };
 
   const updateNodeData = (data: Node) => {
+    const originNodeData = { ...findNode(data.id) } as Node;
     updateNode(data.id, data);
+    // NOTE: Node 수정한 경우, historyStack 에 추가
+    pushHistory({ actionType: "edit", origin: [originNodeData], change: [data] });
   };
 
   /**
@@ -211,8 +215,9 @@ export default function useFlowCommon() {
       if (edges) {
         addEdges(edges);
       }
-    } else if (actionType === "edit") {
-      // TODO: Node change
+    } else if (actionType === "edit" && origin) {
+      const node = origin[0];
+      updateNode(node.id, node);
     }
   };
 
@@ -240,8 +245,9 @@ export default function useFlowCommon() {
       if (edges) {
         removeEdges(edges);
       }
-    } else if (actionType === "edit") {
-      // TODO: Node change
+    } else if (actionType === "edit" && change) {
+      const node = change[0];
+      updateNode(node.id, node);
     }
   };
 
