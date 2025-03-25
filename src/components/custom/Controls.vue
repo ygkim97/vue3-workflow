@@ -90,7 +90,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: "save", item: object): void;
-  (e: "executionAll", item: object): void;
+  (e: "executeAll", item: object): void;
   (e: "switchTheme", item: object): void;
 }>();
 
@@ -115,7 +115,7 @@ const saveBtnClick = () => {
 
 const executionBtnClick = () => {
   // TODO: nodePath 기능 추가
-  emit("execution", { nodes: getNodes.value, edges: getEdges.value });
+  emit("executeAll", { nodes: getNodes.value, edges: getEdges.value });
 };
 
 const themeBtnClick = () => {

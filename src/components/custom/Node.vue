@@ -4,11 +4,21 @@
     :position="props.nodeToolbarPosition"
     :offset="props.nodeToolbarOffset"
   >
-    <template v-for="item in toolbarItemList">
-      <button v-if="item.isVisible" :key="item.id" type="button" @click="toolbarItemClick(item.id)">
-        <SvgICon :name="item.iconName"></SvgICon>
-      </button>
-    </template>
+    <button v-if="props.nodeToolbarShowAdd" type="button" @click="createNode">
+      <SvgICon name="plus"></SvgICon>
+    </button>
+    <button v-if="props.nodeToolbarShowDelete" type="button" @click="deleteNode">
+      <SvgICon name="trash"></SvgICon>
+    </button>
+    <button v-if="props.nodeToolbarShowEdit" type="button" @click="editNode">
+      <SvgICon name="pen-to-square"></SvgICon>
+    </button>
+    <button v-if="props.nodeToolbarShowCopy" type="button" @click="copyNode">
+      <SvgICon name="copy"></SvgICon></button
+    ><button v-if="props.nodeToolbarShowExecution" type="button" @click="execute">
+      <SvgICon name="play"></SvgICon>
+    </button>
+
     <slot name="nodeToolbar"></slot>
   </NodeToolbar>
   <div :class="`vue-flow__node-${nodeType}`" :style="nodeStyle">
@@ -21,7 +31,6 @@
 <script lang="ts" setup>
 import { ref, computed, type PropType } from "vue";
 import { Handle, Position, useVueFlow } from "@vue-flow/core";
-import type { Node } from "@vue-flow/core";
 import { NodeToolbar } from "@vue-flow/node-toolbar";
 import SvgICon from "../common/svgICon.vue";
 import { v4 as uuidv4 } from "uuid";
@@ -94,7 +103,11 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "toolbarItemClick", item: object): void;
+  (e: "addNode", item: object): void;
+  (e: "deleteNode", item: object): void;
+  (e: "editNode", item: object): void;
+  (e: "copyNode", item: object): void;
+  (e: "execute", item: object): void;
 }>();
 
 const nodeStyle = computed(() => {
@@ -105,54 +118,59 @@ const nodeStyle = computed(() => {
   };
 });
 
+const selectedNode = computed(() => {
+  return findNode(props.id);
+});
+
 const nodeLabel = computed(() => {
   return props.data?.[props.nodeLabelKey];
 });
 
 const nodeType = ref(props.data?.[props.nodeTypeKey] || "default");
 
-const toolbarItemList = [
-  { id: "add", iconName: "plus", isVisible: props.nodeToolbarShowAdd },
-  { id: "delete", iconName: "trash", isVisible: props.nodeToolbarShowDelete },
-  { id: "edit", iconName: "pen-to-square", isVisible: props.nodeToolbarShowEdit },
-  { id: "copy", iconName: "copy", isVisible: props.nodeToolbarShowCopy },
-  { id: "execution", iconName: "play", isVisible: props.nodeToolbarShowExecution },
-  { id: "execution", iconName: "play" }
-];
+const createNode = () => {
+  if (!selectedNode.value) return;
 
-const toolbarItemClick = (id: string) => {
-  // TODO: NodeToolbar 이벤트 전달방식 고려
-  const selectedNode: Node | undefined = findNode(props.id);
-  if (!selectedNode) return;
+  const params = {
+    id: uuidv4(),
+    type: "custom",
+    position: findAvailablePosition(selectedNode.value.position),
+    data: { [props.nodeLabelKey]: "Node" }
+  };
+  addNode(params);
+  emit("addNode", params);
+};
 
-  let params: any = {};
+const deleteNode = () => {
+  const params = deleteElements();
+  if (!params) return;
+  emit("deleteNode", params);
+};
 
-  if (id === "add") {
-    params = {
-      id: uuidv4(),
-      type: "custom",
-      position: findAvailablePosition(selectedNode.position),
-      data: { [props.nodeLabelKey]: "Node" }
-    };
-    addNode(params);
-  } else if (id === "delete") {
-    params = deleteElements();
-    if (!params) return;
-  } else if (id === "edit") {
-    params = selectedNode;
-  } else if (id === "copy") {
-    params = {
-      ...selectedNode,
-      id: uuidv4(),
-      position: findAvailablePosition(selectedNode.position),
-      selected: false
-    };
-    addNode(params);
-  } else if (id === "execution") {
-    // TODO: nodePath 데이터 전달
-    params = { nodes: getNodes.value, edges: getEdges.value };
-  }
-  emit("toolbarItemClick", { id, params });
+const editNode = () => {
+  if (!selectedNode.value) return;
+
+  const params = selectedNode.value;
+  emit("editNode", params);
+};
+
+const copyNode = () => {
+  if (!selectedNode.value) return;
+
+  const params = {
+    ...selectedNode.value,
+    id: uuidv4(),
+    position: findAvailablePosition(selectedNode.value.position),
+    selected: false
+  };
+  addNode(params);
+  emit("copyNode", params);
+};
+
+const execute = () => {
+  // TODO: nodePath 데이터 전달
+  const params = { nodes: getNodes.value, edges: getEdges.value };
+  emit("execute", params);
 };
 </script>
 

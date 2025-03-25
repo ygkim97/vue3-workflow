@@ -51,7 +51,7 @@
       :control-show-save="props.controlShowSave"
       :control-show-execution="props.controlShowExecution"
       @save="$emit('save', $event)"
-      @executionAll="$emit('executionAll', $event)"
+      @executeAll="$emit('executeAll', $event)"
       @switchTheme="$emit('switchTheme', $event)"
     >
       <template #controls>
@@ -76,7 +76,11 @@
         :node-toolbar-show-edit="props.nodeToolbarShowEdit"
         :node-toolbar-show-copy="props.nodeToolbarShowCopy"
         :node-toolbar-show-execution="props.nodeToolbarShowExecution"
-        @toolbarItemClick="$emit('toolbarItemClick', $event)"
+        @addNode="$emit('addNode', $event)"
+        @deleteNode="$emit('deleteNode', $event)"
+        @editNode="$emit('editNode', $event)"
+        @copyNode="$emit('copyNode', $event)"
+        @execute="$emit('execute', $event)"
       >
         <template #nodeToolbar>
           <slot name="nodeToolbar" :data="customNodeProps"></slot>
@@ -349,10 +353,14 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: "save", item: object): void;
-  (e: "executionAll", item: object): void;
+  (e: "executeAll", item: object): void;
   (e: "switchTheme", item: object): void;
-  (e: "toolbarItemClick", item: object): void;
-  (e: "delete", item: object): void;
+  (e: "addNode", item: object): void;
+  (e: "deleteNode", item: object): void;
+  (e: "editNode", item: object): void;
+  (e: "copyNode", item: object): void;
+  (e: "execute", item: object): void;
+  (e: "delete", item: object): void; // TODO: 이벤트명 수정
   (e: "draggingOver", item: boolean): void;
 }>();
 

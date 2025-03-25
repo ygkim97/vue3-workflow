@@ -57,8 +57,12 @@
           :marker-type="markerType"
           @save="controlsEvent('save', $event)"
           @switchTheme="controlsEvent('switchTheme', $event)"
-          @executionAll="controlsEvent('executionAll', $event)"
-          @toolbarItemClick="toolbarItemClick"
+          @executeAll="controlsEvent('executeAll', $event)"
+          @addNode="nodeToolbarEvent('addNode', $event)"
+          @deleteNode="nodeToolbarEvent('deleteNode', $event)"
+          @editNode="nodeToolbarEvent('editNode', $event)"
+          @copyNode="nodeToolbarEvent('copyNode', $event)"
+          @execute="nodeToolbarEvent('execute', $event)"
           @delete="onDelete"
           @draggingOver="onDraggingOver"
         >
@@ -211,9 +215,10 @@ const controlsEvent = async (eventName: string, event?: any) => {
   }
 };
 
-const toolbarItemClick = (event: { id: string; params: any }) => {
-  console.log(event);
-  if (event.id === "edit") {
+const nodeToolbarEvent = (eventName: string, event?: any) => {
+  console.log(eventName, event);
+
+  if (eventName === "editNode") {
     isShowModal.value = true;
     editData.value = event.params;
   }
