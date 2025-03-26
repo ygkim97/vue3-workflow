@@ -18,6 +18,8 @@
     @dragover="onDragOver"
     @dragleave="onDragLeave"
     @drop="onDrop"
+    @node-click="onNodeClick"
+    @edge-click="onEdgeClick"
   >
     <Background
       :bg-color="props.bgColor"
@@ -383,6 +385,8 @@ const emit = defineEmits<{
   (e: "execute", item: object): void;
   (e: "deleteFlow", item: object): void;
   (e: "draggingOver", item: boolean): void;
+  (e: "nodeClick", item: object): void;
+  (e: "edgeClick", item: object): void;
 }>();
 
 setSnapGrid(props.snapGrid as [number, number]);
@@ -392,6 +396,14 @@ watch(
     setSnapGrid(value as [number, number]);
   }
 );
+
+const onNodeClick = ({ node }: { node: object }) => {
+  emit("nodeClick", node);
+};
+
+const onEdgeClick = ({ edge }: { edge: object }) => {
+  emit("edgeClick", edge);
+};
 
 const onConnect = (edge: any) => {
   addEdge({ id: uuidv4(), type: "custom", source: edge.source, target: edge.target });
@@ -408,13 +420,10 @@ const changeNode = (node: Node) => {
   updateNodeData(node);
 };
 
-import { ControlButton } from "@vue-flow/controls";
-
 // TODO: 함수로 사용가능하게 가능할까..
 defineExpose({
   changeNode,
-  onDragStart,
-  controlButton: ControlButton
+  onDragStart
 });
 
 onMounted(() => {

@@ -70,6 +70,8 @@
           @execute="nodeToolbarEvent('execute', $event)"
           @deleteFlow="onDeleteFlow"
           @draggingOver="onDraggingOver"
+          @nodeClick="onNodeClick"
+          @edgeClick="onEdgeClick"
         />
       </client-only>
     </div>
@@ -204,6 +206,14 @@ const onDragStart = (event: { event: any; data?: object }) => {
 };
 const onDraggingOver = (dragOver: boolean) => {
   isDragOver.value = dragOver;
+};
+
+const onNodeClick = (node: object) => {
+  console.log("nodeClick", node);
+};
+
+const onEdgeClick = (edge: object) => {
+  console.log("edgeClick", edge);
 };
 </script>
 
