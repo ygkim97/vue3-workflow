@@ -381,7 +381,7 @@ const emit = defineEmits<{
   (e: "editNode", item: object): void;
   (e: "copyNode", item: object): void;
   (e: "execute", item: object): void;
-  (e: "delete", item: object): void; // TODO: 이벤트명 수정
+  (e: "deleteFlow", item: object): void;
   (e: "draggingOver", item: boolean): void;
 }>();
 
@@ -400,7 +400,7 @@ const onConnect = (edge: any) => {
 const onDelete = () => {
   const deletedElements = deleteElements();
   if (deletedElements) {
-    emit("delete", deletedElements);
+    emit("deleteFlow", deletedElements);
   }
 };
 

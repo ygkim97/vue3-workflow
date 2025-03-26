@@ -68,7 +68,7 @@
           @editNode="nodeToolbarEvent('editNode', $event)"
           @copyNode="nodeToolbarEvent('copyNode', $event)"
           @execute="nodeToolbarEvent('execute', $event)"
-          @delete="onDelete"
+          @deleteFlow="onDeleteFlow"
           @draggingOver="onDraggingOver"
         />
       </client-only>
@@ -191,7 +191,7 @@ const nodeToolbarEvent = (eventName: string, event?: any) => {
   }
 };
 
-const onDelete = ({ nodeIds, edgeIds }: { nodeIds: string[]; edgeIds: string[] }) => {
+const onDeleteFlow = ({ nodeIds, edgeIds }: { nodeIds: string[]; edgeIds: string[] }) => {
   console.log("delete nodeIds: ", nodeIds);
   console.log("delete edgeIds: ", edgeIds);
 };
