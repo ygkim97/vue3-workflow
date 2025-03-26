@@ -1,6 +1,7 @@
 <template>
   <!-- ISSUE: selection-key-code / 문서에서는 KeyCode 입력이 가능하다고 되어 있으나, 실제로는 boolean 또는 null만 입력할 수 있다는 경고 발생, vue-flow git 이슈확인필요 -->
   <VueFlow
+    :tabindex="0"
     :nodes="props.nodes"
     :edges="props.edges"
     :fit-view-on-init="true"
@@ -20,6 +21,7 @@
     @drop="onDrop"
     @node-click="onNodeClick"
     @edge-click="onEdgeClick"
+    @keyup="onKeyup"
   >
     <Background
       :bg-color="props.bgColor"
@@ -130,7 +132,7 @@ import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
-const { findNode, findEdge } = useVueFlow();
+const { findNode, findEdge, getSelectedNodes, getSelectedEdges } = useVueFlow();
 const { setSnapGrid, initHistoryStack, deleteElements, onNodesChange, onNodeDragStop, addEdge, updateNodeData } =
   useFlowCommon();
 const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
@@ -387,6 +389,7 @@ const emit = defineEmits<{
   (e: "draggingOver", item: boolean): void;
   (e: "nodeClick", item: object): void;
   (e: "edgeClick", item: object): void;
+  (e: "selectFlow", item: object): void;
 }>();
 
 setSnapGrid(props.snapGrid as [number, number]);
@@ -418,6 +421,17 @@ const onDelete = () => {
 
 const changeNode = (node: Node) => {
   updateNodeData(node);
+};
+
+const onKeyup = (event: any) => {
+  if (event.key === "Control") {
+    const selectedNodes = getSelectedNodes.value;
+    const selectedEdges = getSelectedEdges.value;
+
+    if (selectedNodes.length > 0 || selectedEdges.length > 0) {
+      emit("selectFlow", { nodes: selectedNodes, edges: selectedEdges });
+    }
+  }
 };
 
 // TODO: 함수로 사용가능하게 가능할까..

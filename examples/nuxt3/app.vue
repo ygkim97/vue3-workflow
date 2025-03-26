@@ -72,6 +72,7 @@
           @draggingOver="onDraggingOver"
           @nodeClick="onNodeClick"
           @edgeClick="onEdgeClick"
+          @selectFlow="onSelectFlow"
         />
       </client-only>
     </div>
@@ -214,6 +215,11 @@ const onNodeClick = (node: object) => {
 
 const onEdgeClick = (edge: object) => {
   console.log("edgeClick", edge);
+};
+
+const onSelectFlow = (flow: { nodes: Node[]; edges: Edge[] }) => {
+  console.log("selectNodes", flow.nodes);
+  console.log("selectEdges", flow.edges);
 };
 </script>
 
