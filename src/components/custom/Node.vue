@@ -19,10 +19,25 @@
       <SvgICon name="play"></SvgICon>
     </button>
   </NodeToolbar>
-  <div :class="`vue-flow__node-${nodeType}`" :style="nodeStyle">
-    <Handle v-if="nodeType !== 'input'" type="target" :position="Position.Left" :style="props.defaultHandleStyle" />
+  <div
+    :style="[props.defaultNodeStyle, isSelected ? props.selectNodeStyle : {}]"
+    :class="[`vue-flow__node-${nodeType}`, props.defaultNodeClass, isSelected ? props.selectNodeClass : '']"
+  >
+    <Handle
+      v-if="nodeType !== 'input'"
+      type="target"
+      :position="Position.Left"
+      :style="props.defaultHandleStyle"
+      :class="defaultHandleClass"
+    />
     <div>{{ nodeLabel }}</div>
-    <Handle v-if="nodeType !== 'output'" type="source" :position="Position.Right" :style="props.defaultHandleStyle" />
+    <Handle
+      v-if="nodeType !== 'output'"
+      type="source"
+      :position="Position.Right"
+      :style="props.defaultHandleStyle"
+      :class="defaultHandleClass"
+    />
   </div>
 </template>
 
@@ -58,13 +73,25 @@ const props = defineProps({
     type: Object,
     default: () => {}
   },
+  defaultNodeClass: {
+    type: String,
+    default: ""
+  },
   selectNodeStyle: {
     type: Object,
     default: () => {}
   },
+  selectNodeClass: {
+    type: String,
+    default: ""
+  },
   defaultHandleStyle: {
     type: Object,
     default: () => {}
+  },
+  defaultHandleClass: {
+    type: String,
+    default: ""
   },
   useNodeToolbar: {
     type: Boolean,
@@ -108,12 +135,9 @@ const emit = defineEmits<{
   (e: "execute", item: object): void;
 }>();
 
-const nodeStyle = computed(() => {
+const isSelected = computed(() => {
   const node = findNode(props.id);
-  return {
-    ...props.defaultNodeStyle,
-    ...(node && node.selected ? props.selectNodeStyle : {})
-  };
+  return node?.selected ?? false;
 });
 
 const selectedNode = computed(() => {

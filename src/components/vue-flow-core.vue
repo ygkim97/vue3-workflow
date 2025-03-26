@@ -63,8 +63,11 @@
         :node-label-key="props.nodeLabelKey"
         :node-type-key="props.nodeTypeKey"
         :default-node-style="props.defaultNodeStyle"
+        :default-node-class="props.defaultNodeClass"
         :default-handle-style="props.defaultHandleStyle"
+        :default-handle-class="props.defaultHandleClass"
         :select-node-style="props.selectNodeStyle"
+        :select-node-class="props.selectNodeClass"
         :use-node-toolbar="props.useNodeToolbar"
         :node-toolbar-position="props.nodeToolbarPosition"
         :node-toolbar-offset="props.nodeToolbarOffset"
@@ -83,7 +86,9 @@
     </template>
 
     <template #edge-custom="customEdgeProps">
+      <!-- NOTE: v-bind 해줘야 edge marker 동적 변경 가능, 다른 방법이 있다면 변경 -->
       <CustomEdge
+        v-bind="customEdgeProps"
         :id="customEdgeProps.id"
         :source-x="customEdgeProps.sourceX"
         :source-y="customEdgeProps.sourceY"
@@ -98,7 +103,9 @@
         :labelStyle="customEdgeProps.labelStyle"
         :edge-type="props.edgeType"
         :default-edge-style="props.defaultEdgeStyle"
+        :default-edge-class="props.defaultEdgeClass"
         :select-edge-style="props.selectEdgeStyle"
+        :select-edge-class="props.selectEdgeClass"
         :marker-type="props.markerType"
       ></CustomEdge>
     </template>
@@ -121,7 +128,7 @@ import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
-const { findNode, findEdge, getNodes, getEdges } = useVueFlow();
+const { findNode, findEdge } = useVueFlow();
 const { setSnapGrid, initHistoryStack, deleteElements, onNodesChange, onNodeDragStop, addEdge, updateNodeData } =
   useFlowCommon();
 const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
@@ -286,9 +293,21 @@ const props = defineProps({
       };
     }
   },
+  defaultNodeClass: {
+    type: String,
+    default: ""
+  },
+  selectNodeClass: {
+    type: String,
+    default: ""
+  },
   defaultHandleStyle: {
     type: Object,
     default: () => {}
+  },
+  defaultHandleClass: {
+    type: String,
+    default: ""
   },
   useNodeToolbar: {
     type: Boolean,
@@ -338,6 +357,14 @@ const props = defineProps({
         strokeWidth: "2px"
       };
     }
+  },
+  defaultEdgeClass: {
+    type: String,
+    default: ""
+  },
+  selectEdgeClass: {
+    type: String,
+    default: ""
   },
   markerType: {
     type: Object,
