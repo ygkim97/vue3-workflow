@@ -14,11 +14,18 @@
 </template>
 
 <script lang="ts" setup>
-import { type Component, computed, onMounted, watch, ref, nextTick } from "vue";
+import { type Component, computed, onMounted, watch, nextTick } from "vue";
 import { SmoothStepEdge, StepEdge, BezierEdge, StraightEdge, useVueFlow } from "@vue-flow/core";
 import type { Position } from "@vue-flow/core";
 
 const { findEdge } = useVueFlow();
+
+const edgeComponents: Record<string, Component> = {
+  default: BezierEdge,
+  step: StepEdge,
+  smoothStep: SmoothStepEdge,
+  straight: StraightEdge
+};
 
 const props = defineProps({
   id: {
@@ -68,14 +75,9 @@ const props = defineProps({
   }
 });
 
-const edgeData = ref();
-
-const edgeComponents: Record<string, Component> = {
-  default: BezierEdge,
-  step: StepEdge,
-  smoothStep: SmoothStepEdge,
-  straight: StraightEdge
-};
+const edgeData = computed(() => {
+  return findEdge(props.id);
+});
 
 const isSelected = computed(() => {
   return edgeData.value?.selected ?? false;
@@ -99,16 +101,17 @@ const setMarkerColor = () => {
     strokeColor = styles.stroke;
   }
 
-  if (props.markerType?.markerStart) {
-    edgeData.value.markerStart = { type: props.markerType.markerStart, color: strokeColor };
-  }
-  if (props.markerType?.markerEnd) {
-    edgeData.value.markerEnd = { type: props.markerType.markerEnd, color: strokeColor };
+  if (edgeData.value) {
+    if (props.markerType?.markerStart) {
+      edgeData.value.markerStart = { type: props.markerType.markerStart, color: strokeColor };
+    }
+    if (props.markerType?.markerEnd) {
+      edgeData.value.markerEnd = { type: props.markerType.markerEnd, color: strokeColor };
+    }
   }
 };
 
 onMounted(() => {
-  edgeData.value = findEdge(props.id);
   setMarkerColor();
 });
 </script>

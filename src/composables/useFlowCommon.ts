@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import { useVueFlow } from "@vue-flow/core";
-import type { XYPosition, Node, Edge } from "@vue-flow/core";
+import type { XYPosition, Node, Edge, GraphEdge } from "@vue-flow/core";
 
 interface History {
   actionType: string;
@@ -60,11 +60,16 @@ export default function useFlowCommon() {
     pushHistory({ actionType: "add", edges: [edges] });
   };
 
-  const updateNodeData = (data: Node) => {
-    const originNodeData = { ...findNode(data.id) } as Node;
-    updateNode(data.id, data);
+  const updateNodeData = (node: Node) => {
+    const originNodeData = { ...findNode(node.id) } as Node;
+    updateNode(node.id, node);
     // NOTE: Node 수정한 경우, historyStack 에 추가
-    pushHistory({ actionType: "edit", origin: [originNodeData], change: [data] });
+    pushHistory({ actionType: "edit", origin: [originNodeData], change: [node] });
+  };
+
+  const updateEdgeData = (edge: GraphEdge) => {
+    removeEdges(edge.id);
+    addEdge(edge);
   };
 
   /**
@@ -268,6 +273,7 @@ export default function useFlowCommon() {
     addNode,
     updateNodeData,
     addEdge,
+    updateEdgeData,
     deleteElements,
     findAvailablePosition,
     onNodesChange,

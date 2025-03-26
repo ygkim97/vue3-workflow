@@ -103,9 +103,10 @@ const getNodes = async () => {
 
 const vueFlowCoreRef = ref<{
   changeNode(data: Node): void;
+  changeEdge(data: Edge): void;
   onDragStart(data: { event: any; data?: object }): void;
-  controlButton: any;
 } | null>(null);
+
 const updateNode = (data: Node) => {
   if (vueFlowCoreRef.value) {
     vueFlowCoreRef.value.changeNode(data);
@@ -213,8 +214,14 @@ const onNodeClick = (node: object) => {
   console.log("nodeClick", node);
 };
 
-const onEdgeClick = (edge: object) => {
+const onEdgeClick = (edge: Edge) => {
   console.log("edgeClick", edge);
+
+  // TEST: changeEdge
+  const edgeData = { ...edge, animated: true, label: "test" } as Edge;
+  if (vueFlowCoreRef.value) {
+    vueFlowCoreRef.value.changeEdge(edgeData);
+  }
 };
 
 const onSelectFlow = (flow: { nodes: Node[]; edges: Edge[] }) => {

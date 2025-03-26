@@ -120,7 +120,7 @@
 import { onMounted, watch } from "vue";
 import { Position, VueFlow, useVueFlow } from "@vue-flow/core";
 import type { PropType } from "vue";
-import type { Node, Edge, PanelPositionType } from "@vue-flow/core";
+import type { Node, Edge, PanelPositionType, GraphEdge } from "@vue-flow/core";
 import GraphData1 from "../graph-data/graph-data-1.json";
 import { v4 as uuidv4 } from "uuid";
 import useFlowCommon from "../composables/useFlowCommon.ts";
@@ -133,8 +133,16 @@ import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
 const { findNode, findEdge, getSelectedNodes, getSelectedEdges } = useVueFlow();
-const { setSnapGrid, initHistoryStack, deleteElements, onNodesChange, onNodeDragStop, addEdge, updateNodeData } =
-  useFlowCommon();
+const {
+  setSnapGrid,
+  initHistoryStack,
+  deleteElements,
+  onNodesChange,
+  onNodeDragStop,
+  addEdge,
+  updateNodeData,
+  updateEdgeData
+} = useFlowCommon();
 const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
 
 watch(isDragOver, (value) => {
@@ -400,11 +408,11 @@ watch(
   }
 );
 
-const onNodeClick = ({ node }: { node: object }) => {
+const onNodeClick = ({ node }: { node: Node }) => {
   emit("nodeClick", node);
 };
 
-const onEdgeClick = ({ edge }: { edge: object }) => {
+const onEdgeClick = ({ edge }: { edge: GraphEdge }) => {
   emit("edgeClick", edge);
 };
 
@@ -423,6 +431,10 @@ const changeNode = (node: Node) => {
   updateNodeData(node);
 };
 
+const changeEdge = (edge: GraphEdge) => {
+  updateEdgeData(edge);
+};
+
 const onKeyup = (event: any) => {
   if (event.key === "Control") {
     const selectedNodes = getSelectedNodes.value;
@@ -437,6 +449,7 @@ const onKeyup = (event: any) => {
 // TODO: 함수로 사용가능하게 가능할까..
 defineExpose({
   changeNode,
+  changeEdge,
   onDragStart
 });
 
