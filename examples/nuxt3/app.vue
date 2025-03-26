@@ -65,18 +65,7 @@
           @execute="nodeToolbarEvent('execute', $event)"
           @delete="onDelete"
           @draggingOver="onDraggingOver"
-        >
-          <template #controls="{ data }">
-            <component v-if="vueFlowCoreRef" :is="vueFlowCoreRef.controlButton" @click="controlsTest(data)">
-              <img src="./assets/icon/square-check.svg" alt="" width="16" />
-            </component>
-          </template>
-          <template #nodeToolbar="{ data }">
-            <button @click="nodeToolbarTest(data)">
-              <img src="./assets/icon/square-check.svg" alt="" />
-            </button>
-          </template>
-        </VueFlowCore>
+        />
       </client-only>
     </div>
 
@@ -102,6 +91,7 @@ interface Node {
   type: string;
   position: { x: number; y: number };
   data?: Record<string, any>;
+  style?: Record<string, any>;
 }
 
 interface Edge {
@@ -109,6 +99,14 @@ interface Edge {
   type: string;
   source: string;
   target: string;
+  data?: object;
+  label?: string;
+  labelStyle?: object;
+  labelBgStyle?: object;
+  labelBgPadding?: number[];
+  labelBgBorderRadius?: number;
+  style?: object;
+  animated?: boolean;
 }
 
 onMounted(() => {

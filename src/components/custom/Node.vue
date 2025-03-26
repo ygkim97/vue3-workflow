@@ -18,8 +18,6 @@
     ><button v-if="props.nodeToolbarShowExecution" type="button" @click="execute">
       <SvgICon name="play"></SvgICon>
     </button>
-
-    <slot name="nodeToolbar"></slot>
   </NodeToolbar>
   <div :class="`vue-flow__node-${nodeType}`" :style="nodeStyle">
     <Handle v-if="nodeType !== 'input'" type="target" :position="Position.Left" :style="props.defaultHandleStyle" />

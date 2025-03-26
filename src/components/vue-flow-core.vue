@@ -54,9 +54,6 @@
       @executeAll="$emit('executeAll', $event)"
       @switchTheme="$emit('switchTheme', $event)"
     >
-      <template #controls>
-        <slot name="controls" :data="{ nodes: getNodes, edges: getEdges }"></slot>
-      </template>
     </Controls>
 
     <template #node-custom="customNodeProps">
@@ -82,9 +79,6 @@
         @copyNode="$emit('copyNode', $event)"
         @execute="$emit('execute', $event)"
       >
-        <template #nodeToolbar>
-          <slot name="nodeToolbar" :data="customNodeProps"></slot>
-        </template>
       </CustomNode>
     </template>
 
