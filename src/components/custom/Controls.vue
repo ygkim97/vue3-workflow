@@ -105,7 +105,7 @@ const redoBtnClick = () => {
 
 // TODO: ScreenShot 기능 구현 - 기능 오류
 const screenShotBtnClick = () => {
-  capture(vueFlowRef.value as HTMLElement, { shouldDownload: true });
+  capture(vueFlowRef.value as HTMLElement, { shouldDownload: true, isNodeDataOnly: true });
 };
 
 const saveBtnClick = () => {
