@@ -77,37 +77,7 @@
 import Sidebar from "./components/Sidebar.vue";
 import Modal from "./components/Modal.vue";
 import { ref, onMounted } from "vue";
-
-interface DagData {
-  id: string;
-  name: string;
-  description: string;
-  nodes: Node[];
-  edges: Edge[];
-}
-
-interface Node {
-  id: string;
-  type: string;
-  position: { x: number; y: number };
-  data?: Record<string, any>;
-  style?: Record<string, any>;
-}
-
-interface Edge {
-  id: string;
-  type: string;
-  source: string;
-  target: string;
-  data?: object;
-  label?: string;
-  labelStyle?: object;
-  labelBgStyle?: object;
-  labelBgPadding?: number[];
-  labelBgBorderRadius?: number;
-  style?: object;
-  animated?: boolean;
-}
+import type { DagData, Node, Edge } from "../types/vueFlowCore";
 
 onMounted(() => {
   getNodes();
@@ -138,14 +108,6 @@ const nodes = ref<Node[]>([]);
 const edges = ref<Edge[]>([]);
 
 const isDragOver = ref(false);
-
-watch(
-  nodes.value,
-  (value) => {
-    console.log(value);
-  },
-  { deep: true }
-);
 
 const defaultNodeStyle = {
   backgroundColor: "white",
@@ -235,14 +197,6 @@ const onDragStart = (event: { event: any; data?: object }) => {
 };
 const onDraggingOver = (dragOver: boolean) => {
   isDragOver.value = dragOver;
-};
-
-const nodeToolbarTest = (data: any) => {
-  console.log("nodeToolbarTest", data);
-};
-
-const controlsTest = (data: any) => {
-  console.log("controlsTest", data);
 };
 </script>
 

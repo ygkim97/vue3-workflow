@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineEmits, onMounted, ref } from "vue";
+import type { Node } from "../../types/vueFlowCore";
 
 const props = defineProps({
   data: {
@@ -10,7 +11,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: "close"): void;
-  (e: "updateNode", item: object): void;
+  (e: "updateNode", item: Node): void;
 }>();
 
 const nodeLabel = ref<string>("");
