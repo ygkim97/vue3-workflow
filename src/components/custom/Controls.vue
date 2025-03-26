@@ -6,10 +6,10 @@
     :show-fit-view="props.controlShowFitView"
     :show-interactive="props.controlShowInteractive"
   >
-    <ControlButton v-if="props.controlShowUndo" @click="undoBtnClick">
+    <ControlButton v-if="props.controlShowUndo" :disabled="isUndoDisabled" @click="undoBtnClick">
       <SvgICon name="arrow-rotate-left"></SvgICon>
     </ControlButton>
-    <ControlButton v-if="props.controlShowRedo" @click="redoBtnClick">
+    <ControlButton v-if="props.controlShowRedo" :disabled="isRedoDisabled" @click="redoBtnClick">
       <SvgICon name="arrow-rotate-right"></SvgICon>
     </ControlButton>
     <ControlButton v-if="props.controlShowScreenShot" @click="screenShotBtnClick">
@@ -38,7 +38,7 @@ import useFlowCommon from "../../composables/useFlowCommon.ts";
 import useScreenshot from "../../composables/useScreenshot.ts";
 
 const { getNodes, getEdges, vueFlowRef } = useVueFlow();
-const { executeUndo, executeRedo } = useFlowCommon();
+const { executeUndo, executeRedo, isUndoDisabled, isRedoDisabled } = useFlowCommon();
 const { capture } = useScreenshot();
 
 const props = defineProps({

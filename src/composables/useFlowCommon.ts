@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useVueFlow } from "@vue-flow/core";
 import type { XYPosition, Node, Edge } from "@vue-flow/core";
 
@@ -31,6 +31,14 @@ export default function useFlowCommon() {
     updateNode,
     findNode
   } = useVueFlow();
+
+  const isUndoDisabled = computed(() => {
+    return currentStackKey.value === 0;
+  });
+
+  const isRedoDisabled = computed(() => {
+    return historyStack.value.length === currentStackKey.value + 1;
+  });
 
   const setSnapGrid = (data: [number, number]) => {
     snapGrid.value = data;
@@ -253,6 +261,8 @@ export default function useFlowCommon() {
 
   return {
     snapGrid,
+    isUndoDisabled,
+    isRedoDisabled,
     initHistoryStack,
     setSnapGrid,
     addNode,
