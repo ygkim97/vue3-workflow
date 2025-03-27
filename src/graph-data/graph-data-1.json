@@ -37,14 +37,14 @@
       "type": "custom",
       "source": "test1",
       "target": "test2",
-      "label": "Label",
       "data": {
         "test": "test edge data"
       },
+      "label": "Label",
       "labelStyle": {},
       "labelBgStyle": {},
-      "labelBgPadding": [8, 4],
-      "labelBgBorderRadius": 4,
+      "labelBgPadding": [0, 0],
+      "labelBgBorderRadius": 0,
       "style": {}
     },
     {

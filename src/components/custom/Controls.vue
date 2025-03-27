@@ -32,12 +32,14 @@ import { useVueFlow } from "@vue-flow/core";
 import { ControlButton, Controls } from "@vue-flow/controls";
 import type { PropType } from "vue";
 import type { PanelPositionType } from "@vue-flow/core";
+import type { CustomNode, CustomEdge } from "../../types/vueFlowCore.ts";
 import SvgICon from "../common/svgICon.vue";
 import useFlowCommon from "../../composables/useFlowCommon.ts";
 import useScreenshot from "../../composables/useScreenshot.ts";
 
 const { getNodes, getEdges, vueFlowRef } = useVueFlow();
-const { executeUndo, executeRedo, isUndoDisabled, isRedoDisabled } = useFlowCommon();
+const { executeUndo, executeRedo, isUndoDisabled, isRedoDisabled, transformNodeData, transformEdgeData } =
+  useFlowCommon();
 const { capture } = useScreenshot();
 
 const props = defineProps({
@@ -88,9 +90,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "save", item: object): void;
-  (e: "executeAll", item: object): void;
-  (e: "switchTheme", item: object): void;
+  (e: "save", item: { nodes: CustomNode[]; edges: CustomEdge[] }): void;
+  (e: "executeAll", item: { nodes: CustomNode[]; edges: CustomEdge[] }): void;
+  (e: "switchTheme", item: { theme: string }): void;
 }>();
 
 const theme = ref("light");
@@ -109,12 +111,20 @@ const screenShotBtnClick = () => {
 };
 
 const saveBtnClick = () => {
-  emit("save", { nodes: getNodes.value, edges: getEdges.value });
+  const params = {
+    nodes: transformNodeData(getNodes.value) as CustomNode[],
+    edges: transformEdgeData(getEdges.value) as CustomEdge[]
+  };
+  emit("save", params);
 };
 
 const executionBtnClick = () => {
-  // TODO: nodePath 기능 추가
-  emit("executeAll", { nodes: getNodes.value, edges: getEdges.value });
+  // TODO: nodePath 데이터 전달
+  const params = {
+    nodes: transformNodeData(getNodes.value) as CustomNode[],
+    edges: transformEdgeData(getEdges.value) as CustomEdge[]
+  };
+  emit("executeAll", params);
 };
 
 const themeBtnClick = () => {

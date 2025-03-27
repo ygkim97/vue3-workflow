@@ -121,6 +121,7 @@ import { onMounted, watch } from "vue";
 import { Position, VueFlow, useVueFlow } from "@vue-flow/core";
 import type { PropType } from "vue";
 import type { Node, Edge, PanelPositionType, GraphEdge } from "@vue-flow/core";
+import type { CustomNode as CustomNodeType, CustomEdge as CustomEdgeType } from "../types/vueFlowCore.ts";
 import GraphData1 from "../graph-data/graph-data-1.json";
 import { v4 as uuidv4 } from "uuid";
 import useFlowCommon from "../composables/useFlowCommon.ts";
@@ -141,7 +142,9 @@ const {
   onNodeDragStop,
   addEdge,
   updateNodeData,
-  updateEdgeData
+  updateEdgeData,
+  transformNodeData,
+  transformEdgeData
 } = useFlowCommon();
 const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
 
@@ -385,19 +388,19 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "save", item: object): void;
-  (e: "executeAll", item: object): void;
-  (e: "switchTheme", item: object): void;
-  (e: "addNode", item: object): void;
-  (e: "deleteNode", item: object): void;
-  (e: "editNode", item: object): void;
-  (e: "copyNode", item: object): void;
-  (e: "execute", item: object): void;
-  (e: "deleteFlow", item: object): void;
+  (e: "save", item: { nodes: CustomNodeType[]; edges: CustomEdgeType[] }): void;
+  (e: "executeAll", item: { nodes: CustomNodeType[]; edges: CustomEdgeType[] }): void;
+  (e: "switchTheme", item: { theme: string }): void;
+  (e: "addNode", item: CustomNodeType): void;
+  (e: "deleteNode", item: { nodeIds: string[]; edgeIds: string[] }): void;
+  (e: "editNode", item: CustomNodeType): void;
+  (e: "copyNode", item: CustomNodeType): void;
+  (e: "execute", item: { nodes: CustomNodeType[]; edges: CustomEdgeType[] }): void;
+  (e: "deleteFlow", item: { nodeIds: string[]; edgeIds: string[] }): void;
   (e: "draggingOver", item: boolean): void;
-  (e: "nodeClick", item: object): void;
-  (e: "edgeClick", item: object): void;
-  (e: "selectFlow", item: object): void;
+  (e: "nodeClick", item: CustomNodeType): void;
+  (e: "edgeClick", item: CustomEdgeType): void;
+  (e: "selectFlow", item: { nodes: CustomNodeType[]; edges: CustomEdgeType[] }): void;
 }>();
 
 setSnapGrid(props.snapGrid as [number, number]);
@@ -409,11 +412,11 @@ watch(
 );
 
 const onNodeClick = ({ node }: { node: Node }) => {
-  emit("nodeClick", node);
+  emit("nodeClick", transformNodeData(node) as CustomNodeType);
 };
 
 const onEdgeClick = ({ edge }: { edge: GraphEdge }) => {
-  emit("edgeClick", edge);
+  emit("edgeClick", transformEdgeData(edge) as CustomEdgeType);
 };
 
 const onConnect = (edge: any) => {
@@ -441,7 +444,10 @@ const onKeyup = (event: any) => {
     const selectedEdges = getSelectedEdges.value;
 
     if (selectedNodes.length > 0 || selectedEdges.length > 0) {
-      emit("selectFlow", { nodes: selectedNodes, edges: selectedEdges });
+      emit("selectFlow", {
+        nodes: transformNodeData(selectedNodes) as CustomNodeType[],
+        edges: transformEdgeData(selectedEdges) as CustomEdgeType[]
+      });
     }
   }
 };

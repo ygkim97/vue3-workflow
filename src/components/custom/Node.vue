@@ -48,9 +48,10 @@ import { NodeToolbar } from "@vue-flow/node-toolbar";
 import SvgICon from "../common/svgICon.vue";
 import { v4 as uuidv4 } from "uuid";
 import useFlowCommon from "../../composables/useFlowCommon.ts";
+import type { CustomNode, CustomEdge } from "../../types/vueFlowCore.ts";
 
 const { findNode, getNodes, getEdges } = useVueFlow();
-const { addNode, deleteElements, findAvailablePosition } = useFlowCommon();
+const { addNode, deleteElements, findAvailablePosition, transformNodeData, transformEdgeData } = useFlowCommon();
 
 const props = defineProps({
   id: {
@@ -128,11 +129,11 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "addNode", item: object): void;
-  (e: "deleteNode", item: object): void;
-  (e: "editNode", item: object): void;
-  (e: "copyNode", item: object): void;
-  (e: "execute", item: object): void;
+  (e: "addNode", item: CustomNode): void;
+  (e: "deleteNode", item: { nodeIds: string[]; edgeIds: string[] }): void;
+  (e: "editNode", item: CustomNode): void;
+  (e: "copyNode", item: CustomNode): void;
+  (e: "execute", item: { nodes: CustomNode[]; edges: CustomEdge[] }): void;
 }>();
 
 const isSelected = computed(() => {
@@ -153,45 +154,48 @@ const nodeType = ref(props.data?.[props.nodeTypeKey] || "default");
 const createNode = () => {
   if (!selectedNode.value) return;
 
-  const params = {
+  const node = {
     id: uuidv4(),
     type: "custom",
     position: findAvailablePosition(selectedNode.value.position),
     data: { [props.nodeLabelKey]: "Node" }
   };
-  addNode(params);
-  emit("addNode", params);
+  addNode(node);
+  emit("addNode", node);
 };
 
 const deleteNode = () => {
-  const params = deleteElements();
-  if (!params) return;
-  emit("deleteNode", params);
+  const deleteIds = deleteElements();
+  if (!deleteIds) return;
+  emit("deleteNode", deleteIds);
 };
 
 const editNode = () => {
   if (!selectedNode.value) return;
 
-  const params = selectedNode.value;
-  emit("editNode", params);
+  const node = selectedNode.value;
+  emit("editNode", transformNodeData(node) as CustomNode);
 };
 
 const copyNode = () => {
   if (!selectedNode.value) return;
 
-  const params = {
+  const node = {
     ...selectedNode.value,
     id: uuidv4(),
     position: findAvailablePosition(selectedNode.value.position),
     selected: false
   };
-  addNode(params);
-  emit("copyNode", params);
+  addNode(node);
+  emit("copyNode", transformNodeData(node) as CustomNode);
 };
 
 const execute = () => {
   // TODO: nodePath 데이터 전달
-  const params = { nodes: getNodes.value, edges: getEdges.value };
+  const params = {
+    nodes: transformNodeData(getNodes.value) as CustomNode[],
+    edges: transformEdgeData(getEdges.value) as CustomEdge[]
+  };
   emit("execute", params);
 };
 </script>

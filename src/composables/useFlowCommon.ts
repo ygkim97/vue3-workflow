@@ -1,6 +1,7 @@
 import { ref, computed } from "vue";
 import { useVueFlow } from "@vue-flow/core";
 import type { XYPosition, Node, Edge, GraphEdge } from "@vue-flow/core";
+import type { CustomNode, CustomEdge } from "../types/vueFlowCore.ts";
 
 interface History {
   actionType: string;
@@ -264,6 +265,64 @@ export default function useFlowCommon() {
     }
   };
 
+  const transformNodeData = (data: Node | Node[]): CustomNode | CustomNode[] | undefined => {
+    const isArray = Array.isArray(data) ? true : typeof data === "object" ? false : null;
+    if (isArray === null) return;
+
+    const nodes: Node[] = isArray ? (data as Node[]) : ([data] as Node[]);
+    const nodeKey: (keyof CustomNode)[] = ["id", "type", "position", "data", "style"];
+    let nodeData: CustomNode[] = [];
+
+    if (nodes.length > 0) {
+      nodeData = nodes.map((node) => {
+        const result: Partial<CustomNode> = {};
+        (Object.keys(node) as (keyof CustomNode)[]).forEach((key: keyof CustomNode) => {
+          if (nodeKey.includes(key)) {
+            result[key] = node[key];
+          }
+        });
+        return result as CustomNode;
+      });
+    }
+
+    return isArray ? nodeData : nodeData[0];
+  };
+
+  const transformEdgeData = (data: Edge | Edge[]) => {
+    const isArray = Array.isArray(data) ? true : typeof data === "object" ? false : null;
+    if (isArray === null) return;
+
+    const edges: Edge[] = isArray ? (data as Edge[]) : ([data] as Edge[]);
+    const edgeKey: (keyof CustomEdge)[] = [
+      "id",
+      "type",
+      "source",
+      "target",
+      "data",
+      "label",
+      "labelStyle",
+      "labelBgStyle",
+      "labelBgPadding",
+      "labelBgBorderRadius",
+      "style"
+    ];
+    let edgeData: CustomEdge[] = [];
+
+    if (edges.length > 0) {
+      edgeData = edges.map((edge) => {
+        const result: Partial<CustomEdge> = {};
+        (Object.keys(edge) as (keyof CustomEdge)[]).forEach((key: keyof CustomEdge) => {
+          if (edgeKey.includes(key)) {
+            result[key] = edge[key];
+          }
+        });
+        return result as CustomEdge;
+      });
+    }
+
+    return isArray ? edgeData : edgeData[0];
+  };
+
   return {
     snapGrid,
     isUndoDisabled,
@@ -280,6 +339,8 @@ export default function useFlowCommon() {
     onNodeDragStop,
     getNodeByPosition,
     executeUndo,
-    executeRedo
+    executeRedo,
+    transformNodeData,
+    transformEdgeData
   };
 }
