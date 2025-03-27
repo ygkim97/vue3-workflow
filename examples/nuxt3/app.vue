@@ -6,7 +6,6 @@
       <client-only>
         <VueFlowCore
           ref="vueFlowCoreRef"
-          id="nuxtVueFlow"
           :nodes="nodes"
           :edges="edges"
           :bg-color="isDragOver ? 'rgba(93,140,188,0.42)' : '#edf2f7'"
@@ -192,7 +191,7 @@ const nodeToolbarEvent = (eventName: string, event?: any) => {
 
   if (eventName === "editNode") {
     isShowModal.value = true;
-    editData.value = event.params;
+    editData.value = event;
   }
 };
 
