@@ -5,8 +5,8 @@
     :nodes="props.nodes"
     :edges="props.edges"
     :fit-view-on-init="true"
-    :min-zoom="props.minZoom"
-    :max-zoom="props.maxZoom"
+    :min-zoom="props.minZoom < 1 ? 1 : props.minZoom"
+    :max-zoom="props.maxZoom > 10 ? 10 : props.maxZoom"
     :snap-to-grid="true"
     :snap-grid="props.snapGrid as [number, number]"
     :connection-line-options="{}"
@@ -164,11 +164,11 @@ const props = defineProps({
   },
   minZoom: {
     type: Number,
-    default: 0.5
+    default: 1
   },
   maxZoom: {
     type: Number,
-    default: 2
+    default: 5
   },
   snapGrid: {
     type: Array as PropType<number[]>,
