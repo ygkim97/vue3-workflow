@@ -37,7 +37,7 @@ import SvgICon from "../common/svgICon.vue";
 import useFlowCommon from "../../composables/useFlowCommon.ts";
 import useScreenshot from "../../composables/useScreenshot.ts";
 
-const { getNodes, getEdges, vueFlowRef } = useVueFlow();
+const { getNodes, getEdges, vueFlowRef, getSelectedElements } = useVueFlow();
 const { executeUndo, executeRedo, isUndoDisabled, isRedoDisabled, transformNodeData, transformEdgeData } =
   useFlowCommon();
 const { capture } = useScreenshot();
@@ -107,6 +107,11 @@ const redoBtnClick = () => {
 
 // TODO: ScreenShot 기능 구현 - 기능 오류
 const screenShotBtnClick = () => {
+  // NOTE: 선택된 Node, Edge 선택 해제
+  getSelectedElements.value.forEach((el) => {
+    el.selected = false;
+  });
+
   capture(vueFlowRef.value as HTMLElement, { shouldDownload: true, isNodeDataOnly: true });
 };
 
