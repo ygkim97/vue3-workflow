@@ -105,6 +105,7 @@ const vueFlowCoreRef = ref<{
   changeNode(data: Node): void;
   changeEdge(data: Edge): void;
   onDragStart(data: { event: any; data?: object }): void;
+  changeEdgeAnimated(Data: string[]): void;
 } | null>(null);
 
 const updateNode = (data: Node) => {
@@ -210,6 +211,7 @@ const onDraggingOver = (dragOver: boolean) => {
   isDragOver.value = dragOver;
 };
 
+const animatedEdgeIds = ref(["a2be69bc-5bb9-42d4-8e6d-f2ff74ff02b3"]);
 const onNodeClick = (node: object) => {
   console.log("nodeClick", node);
 };
@@ -217,11 +219,22 @@ const onNodeClick = (node: object) => {
 const onEdgeClick = (edge: Edge) => {
   console.log("edgeClick", edge);
 
+  if (animatedEdgeIds.value.includes(edge.id)) {
+    animatedEdgeIds.value = animatedEdgeIds.value.filter((id) => id !== edge.id);
+  } else {
+    animatedEdgeIds.value.push(edge.id);
+  }
+  console.log(animatedEdgeIds.value);
+
+  if (vueFlowCoreRef.value) {
+    vueFlowCoreRef.value.changeEdgeAnimated(animatedEdgeIds.value);
+  }
+
   // TEST: changeEdge
-  const edgeData = { ...edge, animated: true, label: "test" } as Edge;
+  /*const edgeData = { ...edge, animated: true, label: "test" } as Edge;
   if (vueFlowCoreRef.value) {
     vueFlowCoreRef.value.changeEdge(edgeData);
-  }
+  }*/
 };
 
 const onSelectFlow = (flow: { nodes: Node[]; edges: Edge[] }) => {

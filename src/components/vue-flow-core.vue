@@ -148,10 +148,6 @@ const {
 } = useFlowCommon();
 const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
 
-watch(isDragOver, (value) => {
-  emit("draggingOver", value);
-});
-
 const props = defineProps({
   id: {
     type: String,
@@ -411,6 +407,10 @@ watch(
   }
 );
 
+watch(isDragOver, (value) => {
+  emit("draggingOver", value);
+});
+
 const onNodeClick = ({ node }: { node: Node }) => {
   emit("nodeClick", transformNodeData(node) as CustomNodeType);
 };
@@ -452,11 +452,34 @@ const onKeyup = (event: any) => {
   }
 };
 
+let animatedEdgeIds = <string[]>[];
+const changeEdgeAnimated = (edgeIds: string[]) => {
+  // NOTE: 새로 animated 적용할 ids 조회 및 animated 삭제할 ids 조회
+  const addAnimatedEdgeIds = edgeIds.filter((id) => !animatedEdgeIds.includes(id));
+  const deleteAnimatedEdgeIds = animatedEdgeIds.filter((id) => !edgeIds.includes(id));
+  animatedEdgeIds = [...edgeIds];
+
+  setEdgeAnimated({ addList: addAnimatedEdgeIds, deleteList: deleteAnimatedEdgeIds });
+};
+
+const setEdgeAnimated = ({ addList, deleteList }: { addList: string[]; deleteList: string[] }) => {
+  addList.forEach((id: string) => {
+    const edge = findEdge(id);
+    if (edge) edge.animated = true;
+  });
+
+  deleteList.forEach((id: string) => {
+    const edge = findEdge(id);
+    if (edge) edge.animated = false;
+  });
+};
+
 // TODO: 함수로 사용가능하게 가능할까..
 defineExpose({
   changeNode,
   changeEdge,
-  onDragStart
+  onDragStart,
+  changeEdgeAnimated
 });
 
 onMounted(() => {
