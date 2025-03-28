@@ -259,11 +259,7 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
-  controlShowUndo: {
-    type: Boolean,
-    default: true
-  },
-  controlShowRedo: {
+  controlShowUndoRedo: {
     type: Boolean,
     default: true
   },
@@ -297,12 +293,7 @@ const props = defineProps({
   },
   selectNodeStyle: {
     type: Object,
-    default: () => {
-      return {
-        backgroundColor: "navy",
-        color: "white"
-      };
-    }
+    default: () => {}
   },
   defaultNodeClass: {
     type: String,
@@ -362,12 +353,7 @@ const props = defineProps({
   },
   selectEdgeStyle: {
     type: Object,
-    default: () => {
-      return {
-        stroke: "navy",
-        strokeWidth: "2px"
-      };
-    }
+    default: () => {}
   },
   defaultEdgeClass: {
     type: String,
