@@ -1,7 +1,7 @@
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
+import type { Edge, GraphEdge, Node, XYPosition } from "@vue-flow/core";
 import { useVueFlow } from "@vue-flow/core";
-import type { XYPosition, Node, Edge, GraphEdge } from "@vue-flow/core";
-import type { CustomNode, CustomEdge } from "../types/vueFlowCore.ts";
+import type { CustomEdge, CustomNode } from "../types/vueFlowCore.ts";
 
 interface History {
   actionType: string;
@@ -30,7 +30,9 @@ export default function useFlowCommon() {
     removeEdges,
     getNodes,
     updateNode,
-    findNode
+    findNode,
+    getIncomers,
+    getOutgoers
   } = useVueFlow();
 
   const isUndoDisabled = computed(() => {
@@ -265,9 +267,8 @@ export default function useFlowCommon() {
     }
   };
 
-  const transformNodeData = (data: Node | Node[]): CustomNode | CustomNode[] | undefined => {
-    const isArray = Array.isArray(data) ? true : typeof data === "object" ? false : null;
-    if (isArray === null) return;
+  const transformNodeData = (data: Node | Node[]): CustomNode | CustomNode[] => {
+    const isArray = !!Array.isArray(data);
 
     const nodes: Node[] = isArray ? (data as Node[]) : ([data] as Node[]);
     const nodeKey: (keyof CustomNode)[] = ["id", "type", "position", "data", "style"];
@@ -288,9 +289,8 @@ export default function useFlowCommon() {
     return isArray ? nodeData : nodeData[0];
   };
 
-  const transformEdgeData = (data: Edge | Edge[]) => {
-    const isArray = Array.isArray(data) ? true : typeof data === "object" ? false : null;
-    if (isArray === null) return;
+  const transformEdgeData = (data: Edge | Edge[]): CustomEdge | CustomEdge[] => {
+    const isArray = !!Array.isArray(data);
 
     const edges: Edge[] = isArray ? (data as Edge[]) : ([data] as Edge[]);
     const edgeKey: (keyof CustomEdge)[] = [
@@ -323,6 +323,52 @@ export default function useFlowCommon() {
     return isArray ? edgeData : edgeData[0];
   };
 
+  const getPath = () => {
+    const pathIds: Node[][] = [];
+
+    getNodes.value.forEach((node) => {
+      if (getIncomers(node.id).length === 0) {
+        findPaths(node, [node], pathIds);
+      }
+    });
+
+    return ([] = pathIds.map((path) => {
+      return transformNodeData(path) as CustomNode[];
+    }));
+  };
+
+  const getPathByNode = (node: Node) => {
+    const pathIds: Node[][] = [];
+    const targetPath: Node[][] = [];
+
+    getNodes.value.forEach((n) => {
+      if (getIncomers(n.id).length === 0) {
+        findPaths(n, [n], pathIds, node.id, targetPath);
+      }
+    });
+
+    return ([] = targetPath.map((path) => {
+      return transformNodeData(path) as CustomNode[];
+    }));
+  };
+
+  const findPaths = (node: Node, path: Node[], pathIds: Node[][], targetNodeId?: string, targetPath?: Node[][]) => {
+    const nextNodes = getOutgoers(node.id);
+
+    if (nextNodes.length === 0) {
+      pathIds.push([...path]);
+
+      // NOTE: 특정 노드를 포함한 경로 저장 (targetNodeId가 있을 때만)
+      if (targetNodeId && path.some((n) => n.id === targetNodeId)) {
+        targetPath?.push([...path]);
+      }
+    } else {
+      nextNodes.forEach((nextNode) => {
+        findPaths(nextNode, [...path, nextNode], pathIds, targetNodeId, targetPath);
+      });
+    }
+  };
+
   return {
     snapGrid,
     isUndoDisabled,
@@ -341,6 +387,8 @@ export default function useFlowCommon() {
     executeUndo,
     executeRedo,
     transformNodeData,
-    transformEdgeData
+    transformEdgeData,
+    getPath,
+    getPathByNode
   };
 }

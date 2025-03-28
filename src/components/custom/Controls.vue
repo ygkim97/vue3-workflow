@@ -38,7 +38,7 @@ import useFlowCommon from "../../composables/useFlowCommon.ts";
 import useScreenshot from "../../composables/useScreenshot.ts";
 
 const { getNodes, getEdges, vueFlowRef, getSelectedElements } = useVueFlow();
-const { executeUndo, executeRedo, isUndoDisabled, isRedoDisabled, transformNodeData, transformEdgeData } =
+const { executeUndo, executeRedo, isUndoDisabled, isRedoDisabled, transformNodeData, transformEdgeData, getPath } =
   useFlowCommon();
 const { capture } = useScreenshot();
 
@@ -91,7 +91,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: "save", item: { nodes: CustomNode[]; edges: CustomEdge[] }): void;
-  (e: "executeAll", item: { nodes: CustomNode[]; edges: CustomEdge[] }): void;
+  (e: "executeAll", item: { nodes: CustomNode[]; edges: CustomEdge[]; pathNodes: CustomNode[][] }): void;
   (e: "switchTheme", item: { theme: string }): void;
 }>();
 
@@ -124,10 +124,11 @@ const saveBtnClick = () => {
 };
 
 const executionBtnClick = () => {
-  // TODO: nodePath 데이터 전달
+  const transformNodes = transformNodeData(getNodes.value) as CustomNode[];
   const params = {
-    nodes: transformNodeData(getNodes.value) as CustomNode[],
-    edges: transformEdgeData(getEdges.value) as CustomEdge[]
+    nodes: transformNodes,
+    edges: transformEdgeData(getEdges.value) as CustomEdge[],
+    pathNodes: getPath()
   };
   emit("executeAll", params);
 };

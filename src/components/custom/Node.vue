@@ -51,7 +51,8 @@ import useFlowCommon from "../../composables/useFlowCommon.ts";
 import type { CustomNode, CustomEdge } from "../../types/vueFlowCore.ts";
 
 const { findNode, getNodes, getEdges } = useVueFlow();
-const { addNode, deleteElements, findAvailablePosition, transformNodeData, transformEdgeData } = useFlowCommon();
+const { addNode, deleteElements, findAvailablePosition, transformNodeData, transformEdgeData, getPathByNode } =
+  useFlowCommon();
 
 const props = defineProps({
   id: {
@@ -133,7 +134,7 @@ const emit = defineEmits<{
   (e: "deleteNode", item: { nodeIds: string[]; edgeIds: string[] }): void;
   (e: "editNode", item: CustomNode): void;
   (e: "copyNode", item: CustomNode): void;
-  (e: "execute", item: { nodes: CustomNode[]; edges: CustomEdge[] }): void;
+  (e: "execute", item: { nodes: CustomNode[]; edges: CustomEdge[]; pathNodes: CustomNode[][] }): void;
 }>();
 
 const isSelected = computed(() => {
@@ -191,10 +192,13 @@ const copyNode = () => {
 };
 
 const execute = () => {
-  // TODO: nodePath 데이터 전달
+  if (!selectedNode.value) return;
+
+  const transformNodes = transformNodeData(getNodes.value) as CustomNode[];
   const params = {
-    nodes: transformNodeData(getNodes.value) as CustomNode[],
-    edges: transformEdgeData(getEdges.value) as CustomEdge[]
+    nodes: transformNodes,
+    edges: transformEdgeData(getEdges.value) as CustomEdge[],
+    pathNodes: getPathByNode(selectedNode.value)
   };
   emit("execute", params);
 };

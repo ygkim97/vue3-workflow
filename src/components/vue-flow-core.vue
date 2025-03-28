@@ -385,13 +385,13 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: "save", item: { nodes: CustomNodeType[]; edges: CustomEdgeType[] }): void;
-  (e: "executeAll", item: { nodes: CustomNodeType[]; edges: CustomEdgeType[] }): void;
+  (e: "executeAll", item: { nodes: CustomNodeType[]; edges: CustomEdgeType[]; pathNodes: CustomNodeType[][] }): void;
   (e: "switchTheme", item: { theme: string }): void;
   (e: "addNode", item: CustomNodeType): void;
   (e: "deleteNode", item: { nodeIds: string[]; edgeIds: string[] }): void;
   (e: "editNode", item: CustomNodeType): void;
   (e: "copyNode", item: CustomNodeType): void;
-  (e: "execute", item: { nodes: CustomNodeType[]; edges: CustomEdgeType[] }): void;
+  (e: "execute", item: { nodes: CustomNodeType[]; edges: CustomEdgeType[]; pathNodes: CustomNodeType[][] }): void;
   (e: "deleteFlow", item: { nodeIds: string[]; edgeIds: string[] }): void;
   (e: "draggingOver", item: boolean): void;
   (e: "nodeClick", item: CustomNodeType): void;
