@@ -178,10 +178,13 @@ const controlsEvent = async (eventName: string, event?: any) => {
 
   if (eventName === "save") {
     const { id, name, description } = dagData.value;
-    await $fetch(`http://192.168.107.19:5052/api/v1/dag/${id}`, {
+    const res = await $fetch<{ success: boolean }>(`http://192.168.107.19:5052/api/v1/dag/${id}`, {
       method: "PATCH",
       body: { name, description, nodes: event.nodes, edges: event.edges }
     });
+    if (res.success) {
+      alert("저장되었습니다.");
+    }
   }
 };
 

@@ -6,10 +6,10 @@
     :show-fit-view="props.controlShowFitView"
     :show-interactive="props.controlShowInteractive"
   >
-    <ControlButton v-if="props.controlShowUndo" :disabled="isUndoDisabled" @click="undoBtnClick">
+    <ControlButton v-if="props.controlShowUndoRedo" :disabled="isUndoDisabled" @click="undoBtnClick">
       <SvgICon name="arrow-rotate-left"></SvgICon>
     </ControlButton>
-    <ControlButton v-if="props.controlShowRedo" :disabled="isRedoDisabled" @click="redoBtnClick">
+    <ControlButton v-if="props.controlShowUndoRedo" :disabled="isRedoDisabled" @click="redoBtnClick">
       <SvgICon name="arrow-rotate-right"></SvgICon>
     </ControlButton>
     <ControlButton v-if="props.controlShowScreenShot" @click="screenShotBtnClick">
@@ -63,11 +63,7 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
-  controlShowUndo: {
-    type: Boolean,
-    default: true
-  },
-  controlShowRedo: {
+  controlShowUndoRedo: {
     type: Boolean,
     default: true
   },
