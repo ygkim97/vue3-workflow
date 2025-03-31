@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmits, onMounted, ref } from "vue";
-import type { Node } from "../../types/vueFlowCore";
+import type { Node } from "../types/vueFlowCore";
 
 const props = defineProps({
   data: {

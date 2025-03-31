@@ -83,7 +83,7 @@
 import Sidebar from "./components/Sidebar.vue";
 import Modal from "./components/Modal.vue";
 import { ref, onMounted } from "vue";
-import type { DagData, Node, Edge } from "../types/vueFlowCore";
+import type { DagData, Node, Edge } from "./types/vueFlowCore";
 
 onMounted(() => {
   getNodes();
