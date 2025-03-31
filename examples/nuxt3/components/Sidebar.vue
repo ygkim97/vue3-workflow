@@ -39,13 +39,7 @@ const toggleAccordion = (id: string) => {
   accordionState.value[id] = !accordionState.value[id];
 };
 
-const onDragStart = ({
-  event,
-  data
-}: {
-  event: Event;
-  data: { id: string; name: string; inputs: object[]; output: object };
-}) => {
+const onDragStart = ({ event, data }: { event: Event; data: { id: string; name: string; inputs: object[] } }) => {
   // TODO: inputs default 값 설정
   const { id, name, inputs } = data;
   emit("dragStart", { event, data: { function_id: id, label: name } });
@@ -92,24 +86,6 @@ onMounted(async () => {
                   {{ nodeItem.name }}
                 </div>
               </template>
-              <!--              <div
-                :draggable="true"
-                @dragstart="$emit('dragStart', { event: $event, data: { label: 'TEST01', type: 'input' } })"
-              >
-                Input Node
-              </div>
-              <div
-                :draggable="true"
-                @dragstart="$emit('dragStart', { event: $event, data: { label: 'TEST02', type: 'default' } })"
-              >
-                Default Node
-              </div>
-              <div
-                :draggable="true"
-                @dragstart="$emit('dragStart', { event: $event, data: { label: 'TEST03', type: 'output' } })"
-              >
-                Output Node
-              </div>-->
             </div>
           </div>
         </div>

@@ -103,7 +103,7 @@ const vueFlowCoreRef = ref<{
   changeNode(data: Node): void;
   changeEdge(data: Edge): void;
   onDragStart(data: { event: any; data?: object }): void;
-  changeEdgeAnimated(Data: string[]): void;
+  changeEdgeAnimated(data: string[]): void;
 } | null>(null);
 
 const updateNode = (data: Node) => {
