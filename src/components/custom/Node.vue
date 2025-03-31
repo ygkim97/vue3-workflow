@@ -142,23 +142,21 @@ const isSelected = computed(() => {
   return node?.selected ?? false;
 });
 
-const selectedNode = computed(() => {
-  return findNode(props.id);
-});
-
 const nodeLabel = computed(() => {
   return props.data?.[props.nodeLabelKey];
 });
 
+const selectedNode = findNode(props.id);
+
 const nodeType = ref(props.data?.[props.nodeTypeKey] || "default");
 
 const createNode = () => {
-  if (!selectedNode.value) return;
+  if (!selectedNode) return;
 
   const node = {
     id: uuidv4(),
     type: "custom",
-    position: findAvailablePosition(selectedNode.value.position),
+    position: findAvailablePosition(selectedNode.position),
     data: { [props.nodeLabelKey]: "Node" }
   };
   addNode(node);
@@ -172,19 +170,19 @@ const deleteNode = () => {
 };
 
 const editNode = () => {
-  if (!selectedNode.value) return;
+  if (!selectedNode) return;
 
-  const node = selectedNode.value;
+  const node = selectedNode;
   emit("editNode", transformNodeData(node) as CustomNode);
 };
 
 const copyNode = () => {
-  if (!selectedNode.value) return;
+  if (!selectedNode) return;
 
   const node = {
-    ...selectedNode.value,
+    ...selectedNode,
     id: uuidv4(),
-    position: findAvailablePosition(selectedNode.value.position),
+    position: findAvailablePosition(selectedNode.position),
     selected: false
   };
   addNode(node);
@@ -192,13 +190,13 @@ const copyNode = () => {
 };
 
 const execute = () => {
-  if (!selectedNode.value) return;
+  if (!selectedNode) return;
 
   const transformNodes = transformNodeData(getNodes.value) as CustomNode[];
   const params = {
     nodes: transformNodes,
     edges: transformEdgeData(getEdges.value) as CustomEdge[],
-    pathNodes: getPathByNode(selectedNode.value)
+    pathNodes: getPathByNode(selectedNode)
   };
   emit("execute", params);
 };
