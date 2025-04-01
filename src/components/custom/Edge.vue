@@ -2,8 +2,6 @@
   <component
     :is="edgeComponents[props.edgeType] || BezierEdge"
     :id="id"
-    :style="[props.defaultEdgeStyle, isSelected ? props.selectEdgeStyle : {}]"
-    :class="[props.defaultEdgeClass, isSelected ? props.selectEdgeClass : {}]"
     :source-x="props.sourceX"
     :source-y="props.sourceY"
     :target-x="props.targetX"
@@ -52,22 +50,6 @@ const props = defineProps({
   },
   targetPosition: {
     type: String as () => Position
-  },
-  defaultEdgeStyle: {
-    type: Object,
-    default: () => {}
-  },
-  defaultEdgeClass: {
-    type: String,
-    default: ""
-  },
-  selectEdgeStyle: {
-    type: Object,
-    default: () => {}
-  },
-  selectEdgeClass: {
-    type: String,
-    default: ""
   },
   markerType: {
     type: Object,

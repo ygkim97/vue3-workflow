@@ -19,26 +19,9 @@
       <SvgICon name="play"></SvgICon>
     </button>
   </NodeToolbar>
-  <div
-    :style="[props.defaultNodeStyle, isSelected ? props.selectNodeStyle : {}]"
-    :class="[`vue-flow__node-${nodeType}`, props.defaultNodeClass, isSelected ? props.selectNodeClass : '']"
-  >
-    <Handle
-      v-if="nodeType !== 'input'"
-      type="target"
-      :position="Position.Left"
-      :style="props.defaultHandleStyle"
-      :class="defaultHandleClass"
-    />
-    <div>{{ nodeLabel }}</div>
-    <Handle
-      v-if="nodeType !== 'output'"
-      type="source"
-      :position="Position.Right"
-      :style="props.defaultHandleStyle"
-      :class="defaultHandleClass"
-    />
-  </div>
+  <Handle v-if="nodeType !== 'input'" type="target" :position="Position.Left" />
+  <div>{{ nodeLabel }}</div>
+  <Handle v-if="nodeType !== 'output'" type="source" :position="Position.Right" />
 </template>
 
 <script lang="ts" setup>
@@ -70,30 +53,6 @@ const props = defineProps({
   nodeTypeKey: {
     type: String,
     default: "type"
-  },
-  defaultNodeStyle: {
-    type: Object,
-    default: () => {}
-  },
-  defaultNodeClass: {
-    type: String,
-    default: ""
-  },
-  selectNodeStyle: {
-    type: Object,
-    default: () => {}
-  },
-  selectNodeClass: {
-    type: String,
-    default: ""
-  },
-  defaultHandleStyle: {
-    type: Object,
-    default: () => {}
-  },
-  defaultHandleClass: {
-    type: String,
-    default: ""
   },
   useNodeToolbar: {
     type: Boolean,
@@ -137,11 +96,6 @@ const emit = defineEmits<{
   (e: "execute", item: { nodes: CustomNode[]; edges: CustomEdge[]; pathNodes: CustomNode[][] }): void;
 }>();
 
-const isSelected = computed(() => {
-  const node = findNode(props.id);
-  return node?.selected ?? false;
-});
-
 const nodeLabel = computed(() => {
   return props.data?.[props.nodeLabelKey];
 });
@@ -166,14 +120,14 @@ const createNode = () => {
 const deleteNode = () => {
   const deleteIds = deleteElements();
   if (!deleteIds) return;
+
   emit("deleteNode", deleteIds);
 };
 
 const editNode = () => {
   if (!selectedNode) return;
 
-  const node = selectedNode;
-  emit("editNode", transformNodeData(node) as CustomNode);
+  emit("editNode", transformNodeData(selectedNode) as CustomNode);
 };
 
 const copyNode = () => {
@@ -203,6 +157,26 @@ const execute = () => {
 </script>
 
 <style>
+/* custom node default style */
+.vue-flow__node {
+  padding: 10px;
+  border-radius: 3px;
+  width: 150px;
+  font-size: 12px;
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  color: var(--vf-node-text);
+  background-color: var(--vf-node-bg);
+  border-color: var(--vf-node-color);
+}
+
+.vue-flow__node.selected {
+  background-color: #444c56;
+  color: #ffffff;
+  border-color: #636e7b;
+}
+
 /* TODO: nodeToolbar 기본 style 적용 */
 .vue-flow__node-toolbar {
   display: flex;

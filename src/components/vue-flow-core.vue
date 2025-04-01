@@ -65,12 +65,6 @@
         :data="customNodeProps.data"
         :node-label-key="props.nodeLabelKey"
         :node-type-key="props.nodeTypeKey"
-        :default-node-style="props.defaultNodeStyle"
-        :default-node-class="props.defaultNodeClass"
-        :default-handle-style="props.defaultHandleStyle"
-        :default-handle-class="props.defaultHandleClass"
-        :select-node-style="props.selectNodeStyle"
-        :select-node-class="props.selectNodeClass"
         :use-node-toolbar="props.useNodeToolbar"
         :node-toolbar-position="props.nodeToolbarPosition"
         :node-toolbar-offset="props.nodeToolbarOffset"
@@ -105,10 +99,6 @@
         :labelBgStyle="customEdgeProps.labelBgStyle"
         :labelStyle="customEdgeProps.labelStyle"
         :edge-type="props.edgeType"
-        :default-edge-style="props.defaultEdgeStyle"
-        :default-edge-class="props.defaultEdgeClass"
-        :select-edge-style="props.selectEdgeStyle"
-        :select-edge-class="props.selectEdgeClass"
         :marker-type="props.markerType"
       ></CustomEdge>
     </template>
@@ -286,30 +276,6 @@ const props = defineProps({
     type: String,
     default: "type"
   },
-  defaultNodeStyle: {
-    type: Object,
-    default: () => {}
-  },
-  selectNodeStyle: {
-    type: Object,
-    default: () => {}
-  },
-  defaultNodeClass: {
-    type: String,
-    default: ""
-  },
-  selectNodeClass: {
-    type: String,
-    default: ""
-  },
-  defaultHandleStyle: {
-    type: Object,
-    default: () => {}
-  },
-  defaultHandleClass: {
-    type: String,
-    default: ""
-  },
   useNodeToolbar: {
     type: Boolean,
     default: true
@@ -345,22 +311,6 @@ const props = defineProps({
   edgeType: {
     type: String,
     default: "default"
-  },
-  defaultEdgeStyle: {
-    type: Object,
-    default: () => {}
-  },
-  selectEdgeStyle: {
-    type: Object,
-    default: () => {}
-  },
-  defaultEdgeClass: {
-    type: String,
-    default: ""
-  },
-  selectEdgeClass: {
-    type: String,
-    default: ""
   },
   markerType: {
     type: Object,

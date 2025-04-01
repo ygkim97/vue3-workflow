@@ -38,12 +38,6 @@
           :control-show-execution="true"
           node-label-key="label"
           node-type-key="type"
-          :default-node-style="defaultNodeStyle"
-          :select-node-style="selectNodeStyle"
-          :default-node-class="defaultNodeClass"
-          :select-node-class="selectNodeClass"
-          :default-handle-style="defaultHandleStyle"
-          :default-handle-class="defaultHandleClass"
           :use-node-toolbar="true"
           node-toolbar-position="bottom"
           :node-toolbar-offset="10"
@@ -53,10 +47,6 @@
           :node-toolbar-show-copy="true"
           :node-toolbar-show-execution="true"
           edge-type="smoothStep"
-          :default-edge-style="defaultEdgeStyle"
-          :default-edge-class="defaultEdgeClass"
-          :select-edge-style="selectEdgeStyle"
-          :select-edge-class="selectEdgeClass"
           :marker-type="markerType"
           @save="controlsEvent('save', $event)"
           @switchTheme="controlsEvent('switchTheme', $event)"
@@ -116,55 +106,6 @@ const nodes = ref<Node[]>([]);
 const edges = ref<Edge[]>([]);
 
 const isDragOver = ref(false);
-
-const defaultNodeStyle = {
-  /*backgroundColor: "white",
-  width: "100px",
-  height: "10px",
-  color: "navy",
-  fontSize: "10px",
-  fontWeight: "bold",
-  borderStyle: "solid",
-  borderColor: "navy",
-  borderWidth: "1px",
-  borderRadius: "30px",
-  opacity: 0.5*/
-};
-
-const defaultNodeClass = "default-node-class";
-
-const selectNodeStyle = {
-  /*backgroundColor: "navy",
-  color: "white"*/
-};
-
-const selectNodeClass = "select-node-class";
-
-const defaultHandleStyle = {
-  /*backgroundColor: "white",
-  width: "5px",
-  height: "5px",
-  borderStyle: "solid",
-  borderColor: "navy",
-  borderWidth: "2px",
-  borderRadius: "100%"*/
-};
-
-const defaultHandleClass = "default-handle-class";
-
-const defaultEdgeStyle = {
-  /*stroke: "gray",
-  strokeWidth: "1px"*/
-};
-
-const defaultEdgeClass = "default-edge-class";
-
-const selectEdgeStyle = {
-  /*stroke: "navy",
-  strokeWidth: "1px"*/
-};
-
-const selectEdgeClass = "select-edge-class";
 
 const markerType = {
   markerEnd: "arrowclosed"
@@ -272,44 +213,42 @@ header {
   overflow: hidden;
 }
 
-.default-node-class {
+/* NOTE: vueFlow Class Names 사용해서 css 적용 */
+.vue-flow__node {
   background-color: white;
-  width: 100px;
-  height: 10px;
-  color: darkgreen;
+  text-align: center;
+  color: navy;
   font-size: 10px;
   font-weight: bold;
   border-style: solid;
-  border-color: darkgreen;
+  border-color: navy;
   border-width: 1px;
   border-radius: 30px;
   opacity: 0.8;
 }
 
-.select-node-class {
-  background-color: darkgreen;
+.vue-flow__node.selected {
+  background-color: navy;
   color: white;
 }
 
-/* NOTE: handle class 사용시 background-color 의 경우, !important 해주어야 style 적용가능 */
-.default-handle-class {
-  background-color: white !important;
+.vue-flow__handle {
+  background-color: white;
   width: 5px;
   height: 5px;
   border-style: solid;
-  border-color: darkgreen;
-  border-width: 2px;
+  border-color: navy;
+  border-width: 1.5px;
   border-radius: 100%;
 }
 
-.default-edge-class {
-  stroke: yellowgreen;
-  stroke-width: 2px;
+.vue-flow__edge-path {
+  stroke: dimgray;
+  stroke-width: 1.5px;
 }
 
-/* NOTE: select edge class 사용시 stroke 의 경우, !important 해주어야 style 적용 가능 */
-.select-edge-class {
-  stroke: forestgreen !important;
-  stroke-width: 2.5px;
+.vue-flow__edge.selected .vue-flow__edge-path {
+  stroke: navy;
+  stroke-width: 1.5px;
 }
 </style>

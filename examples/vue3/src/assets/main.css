@@ -1,0 +1,38 @@
+/* NOTE: vueFlow Class Names 사용해서 css 적용 */
+.vue-flow__node {
+    background-color: white;
+    text-align: center;
+    color: navy;
+    font-size: 10px;
+    font-weight: bold;
+    border-style: solid;
+    border-color: navy;
+    border-width: 1px;
+    border-radius: 30px;
+    opacity: 0.8;
+}
+
+.vue-flow__node.selected {
+    background-color: navy;
+    color: white;
+}
+
+.vue-flow__handle {
+    background-color: white;
+    width: 5px;
+    height: 5px;
+    border-style: solid;
+    border-color: navy;
+    border-width: 1.5px;
+    border-radius: 100%;
+}
+
+.vue-flow__edge-path {
+    stroke: dimgray;
+    stroke-width: 1.5px;
+}
+
+.vue-flow__edge.selected .vue-flow__edge-path {
+    stroke: navy;
+    stroke-width: 1.5px;
+}
