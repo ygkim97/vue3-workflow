@@ -122,7 +122,7 @@ import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
-const { findNode, findEdge, getSelectedNodes, getSelectedEdges } = useVueFlow();
+const { findNode, findEdge, getSelectedNodes, getSelectedEdges, getEdges } = useVueFlow();
 const {
   setSnapGrid,
   initHistoryStack,
@@ -387,25 +387,9 @@ const onKeyup = (event: any) => {
   }
 };
 
-let animatedEdgeIds = <string[]>[];
 const changeEdgeAnimated = (edgeIds: string[]) => {
-  // NOTE: 새로 animated 적용할 ids 조회 및 animated 삭제할 ids 조회
-  const addAnimatedEdgeIds = edgeIds.filter((id) => !animatedEdgeIds.includes(id));
-  const deleteAnimatedEdgeIds = animatedEdgeIds.filter((id) => !edgeIds.includes(id));
-  animatedEdgeIds = [...edgeIds];
-
-  setEdgeAnimated({ addList: addAnimatedEdgeIds, deleteList: deleteAnimatedEdgeIds });
-};
-
-const setEdgeAnimated = ({ addList, deleteList }: { addList: string[]; deleteList: string[] }) => {
-  addList.forEach((id: string) => {
-    const edge = findEdge(id);
-    if (edge) edge.animated = true;
-  });
-
-  deleteList.forEach((id: string) => {
-    const edge = findEdge(id);
-    if (edge) edge.animated = false;
+  getEdges.value.forEach((edge: Edge) => {
+    edge.animated = edgeIds.includes(edge.id);
   });
 };
 
