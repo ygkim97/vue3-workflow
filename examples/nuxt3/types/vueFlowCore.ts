@@ -1,11 +1,3 @@
-export interface DagData {
-  id: string;
-  name: string;
-  description: string;
-  nodes: Node[];
-  edges: Edge[];
-}
-
 export interface Node {
   id: string;
   type: string;
@@ -27,4 +19,14 @@ export interface Edge {
   labelBgBorderRadius?: number;
   style?: object;
   animated?: boolean;
+}
+
+export interface NodeTemplate {
+  id: string;
+  type: string;
+  label: string;
+}
+
+export interface NodeTemplateObj {
+  [key: string]: NodeTemplate[];
 }

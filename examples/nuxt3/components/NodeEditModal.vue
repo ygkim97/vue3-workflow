@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { defineEmits, onMounted, ref } from "vue";
-import type { Node } from "../types/vueFlowCore";
+import { ref, defineEmits, onMounted, type PropType } from "vue";
+import type { Node } from "~/types/vueFlowCore";
 
 const props = defineProps({
   data: {
-    type: Object,
-    required: false
+    type: Object as PropType<Node>,
+    required: true
   }
 });
 
@@ -21,8 +21,8 @@ const close = () => {
   emit("close");
 };
 
-const change = () => {
-  if (props.data && confirm("변경된 내용이 저장됩니다. 계속하시겠습니까?")) {
+const update = () => {
+  if (confirm("변경된 내용이 저장됩니다. 계속하시겠습니까?")) {
     const { id, type, position, data } = props.data;
     const changeData = { ...data, label: nodeLabel.value, description: nodeDesc.value };
     emit("updateNode", { id, type, position, data: changeData });
@@ -31,15 +31,16 @@ const change = () => {
 };
 
 onMounted(() => {
-  if (props.data) {
+  if (props.data.data) {
     const { label, description } = props.data.data;
     nodeLabel.value = label;
     nodeDesc.value = description || "";
   }
 });
 </script>
+
 <template>
-  <div class="modal-overlay" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <dialog class="modal-overlay" open aria-labelledby="modal-title">
     <div class="modal-backdrop" aria-hidden="true"></div>
 
     <div class="modal-container">
@@ -47,27 +48,26 @@ onMounted(() => {
         <div class="modal-content">
           <div class="modal-body">
             <div class="modal-header">
-              <h3 id="modal-title">Update Node Details</h3>
+              <h3 id="modal-title">Update Node Information</h3>
               <button class="close-btn" @click="close">X</button>
             </div>
             <div class="input-group">
               <label for="label">Label</label>
               <input type="text" id="label" placeholder="label" v-model="nodeLabel" />
             </div>
-            <!-- TODO: 데이터 inputs 에 맞게 form 유형 변경 -->
             <div class="input-group">
               <label for="description">Description</label>
               <textarea id="description" placeholder="description" v-model="nodeDesc"></textarea>
             </div>
           </div>
           <div class="modal-footer">
-            <button class="confirm-btn" @click="change">Change</button>
+            <button class="confirm-btn" @click="update">Update</button>
             <button class="cancel-btn" @click="close">Cancel</button>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </dialog>
 </template>
 
 <style scoped>
@@ -107,7 +107,7 @@ onMounted(() => {
 
 .modal-content {
   position: relative;
-  padding: 20px;
+  padding: 0 15px 15px;
   transform: scale(1);
   overflow: hidden;
   border-radius: 0.5rem;
@@ -125,6 +125,7 @@ onMounted(() => {
   font-size: 1rem;
   font-weight: 600;
   color: #1f2937;
+  padding: 0;
 }
 
 .close-btn {
@@ -150,8 +151,6 @@ onMounted(() => {
   min-width: 0;
   flex-grow: 1;
   padding: 10px;
-  font-size: 1rem;
-  color: #111827;
   border: 1px solid #d1d5db;
   resize: none;
 }
@@ -162,7 +161,7 @@ onMounted(() => {
 
 .modal-footer {
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr; /* 3등분, 가운데 3배 넓이 */
+  grid-template-columns: 3fr 1fr 1fr;
   gap: 10px;
   padding-top: 20px;
 }
@@ -180,6 +179,7 @@ onMounted(() => {
   cursor: pointer;
   padding: 10px;
   grid-column: 2;
+  border: none;
 }
 
 .confirm-btn:hover {

@@ -1,0 +1,83 @@
+{
+  "Input": [
+    {
+      "id": "inputNode1",
+      "type": "input",
+      "label": "Input Node 1"
+    },
+    {
+      "id": "inputNode2",
+      "type": "input",
+      "label": "Input Node 2"
+    },
+    {
+      "id": "inputNode3",
+      "type": "input",
+      "label": "Input Node 3"
+    },
+    {
+      "id": "inputNode4",
+      "type": "input",
+      "label": "Input Node 4"
+    }
+  ],
+  "Default": [
+    {
+      "id": "defaultNode1",
+      "type": "default",
+      "label": "Default Node 1"
+    },
+    {
+      "id": "defaultNode2",
+      "type": "default",
+      "label": "Default Node 2"
+    },
+    {
+      "id": "defaultNode3",
+      "type": "default",
+      "label": "Default Node 3"
+    },
+    {
+      "id": "defaultNode4",
+      "type": "default",
+      "label": "Default Node 4"
+    },
+    {
+      "id": "defaultNode5",
+      "type": "default",
+      "label": "Default Node 5"
+    },
+    {
+      "id": "defaultNode6",
+      "type": "default",
+      "label": "Default Node 6"
+    }
+  ],
+  "Output": [
+    {
+      "id": "outputNode1",
+      "type": "output",
+      "label": "Output Node 1"
+    },
+    {
+      "id": "outputNode2",
+      "type": "output",
+      "label": "Output Node 2"
+    },
+    {
+      "id": "outputNode3",
+      "type": "output",
+      "label": "Output Node 3"
+    },
+    {
+      "id": "outputNode4",
+      "type": "output",
+      "label": "Output Node 4"
+    },
+    {
+      "id": "outputNode5",
+      "type": "output",
+      "label": "Output Node 5"
+    }
+  ]
+}

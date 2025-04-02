@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, nextTick, defineEmits } from "vue";
+import type { NodeTemplateObj, NodeTemplate } from "~/types/vueFlowCore";
 
 const emit = defineEmits<{
   (e: "dragStart", item: { event: any; data?: object }): void;
@@ -7,23 +8,9 @@ const emit = defineEmits<{
 
 const contentRefs = ref<any[]>([]);
 const contentHeights = ref<{ [key: string]: number }>({});
-const defaultItem = [
-  { name: "Input Node", type: "input" },
-  { name: "Default Node", type: "default" },
-  { name: "Oupput Node", type: "output" }
-];
-const accordionItems = ref<{ id: string; label: string; item: object[] }[]>([
-  { id: "node001", label: "Node API TEST", item: [] },
-  { id: "node002", label: "Node TEST 001", item: defaultItem },
-  { id: "node003", label: "Node TEST 002", item: defaultItem }
-]);
-const accordionState = ref<{ [key: string]: boolean }>({});
 
-const initializeAccordionState = () => {
-  accordionItems.value.forEach(({ id }) => {
-    accordionState.value[id] = false;
-  });
-};
+const nodeTemplateObj = ref<NodeTemplateObj | null>(null);
+const accordionState = ref<{ [key: string]: boolean }>({});
 
 const updateContentHeight = () => {
   nextTick(() => {
@@ -35,23 +22,29 @@ const updateContentHeight = () => {
   });
 };
 
-const toggleAccordion = (id: string) => {
-  accordionState.value[id] = !accordionState.value[id];
+const initializeAccordionState = () => {
+  for (const key in nodeTemplateObj) {
+    accordionState.value[key] = false;
+  }
 };
 
-const onDragStart = ({ event, data }: { event: Event; data: { id: string; name: string; inputs: object[] } }) => {
-  // TODO: inputs default 값 설정
-  const { id, name, inputs } = data;
-  emit("dragStart", { event, data: { function_id: id, label: name } });
+const toggleAccordion = (category: string) => {
+  accordionState.value[category] = !accordionState.value[category];
+};
+
+const onDragStart = ({ event, data }: { event: Event; data: NodeTemplate }) => {
+  const { id, label } = data;
+  emit("dragStart", { event, data: { template_node_id: id, label: label } });
 };
 
 onMounted(async () => {
-  const res: { success: boolean; data: object[] } = await $fetch("http://192.168.107.19:5052/api/v1/udf");
-  if (res.success) {
-    accordionItems.value[0].item = res.data;
+  const res = await fetch("/data/nodeTemplate.json");
+  if (res.ok) {
+    nodeTemplateObj.value = await res.json();
 
-    await nextTick();
-    updateContentHeight();
+    await nextTick(() => {
+      updateContentHeight();
+    });
   }
 
   initializeAccordionState();
@@ -63,27 +56,35 @@ onMounted(async () => {
     <div class="vue-flow__sidebar-title">WORK FLOW</div>
 
     <div class="vue-flow__sidebar-contents">
-      <div v-for="item in accordionItems" :key="`item_${item.id}`" class="vue-flow__accordion">
-        <button @click="toggleAccordion(item.id)" class="vue-flow__accordion-header">
-          <span class="vue-flow__accordion-text">{{ item.label }}</span>
+      <div
+        v-for="(nodeTemplateList, category) in nodeTemplateObj"
+        :key="`category_${category}`"
+        class="vue-flow__accordion"
+      >
+        <button @click="toggleAccordion(category as string)" class="vue-flow__accordion-header">
+          <span class="vue-flow__accordion-text">{{ category }}</span>
           <span class="vue-flow__accordion-icon">
-            <img v-if="accordionState[item.id]" src="../assets/icon/chevron-up.svg" alt="" />
+            <img v-if="accordionState[category]" src="../assets/icon/chevron-up.svg" alt="" />
             <img v-else src="../assets/icon/chevron-down.svg" alt="" />
           </span>
         </button>
         <div
-          :id="item.id"
+          ref="contentRefs"
+          :id="category as string"
           class="vue-flow__accordion-content"
           :style="{
-            maxHeight: accordionState[item.id] ? `${contentHeights[item.id]}px` : '0px'
+            maxHeight: accordionState[category] ? `${contentHeights[category]}px` : '0px'
           }"
-          ref="contentRefs"
         >
           <div class="vue-flow__accordion-body">
             <div class="vue-flow__drag-group">
-              <template v-for="nodeItem in item.item">
-                <div :draggable="true" @dragstart="onDragStart({ event: $event, data: nodeItem })">
-                  {{ nodeItem.name }}
+              <template v-for="nodeTemplate in nodeTemplateList">
+                <div
+                  class="node-template"
+                  :draggable="true"
+                  @dragstart="onDragStart({ event: $event, data: nodeTemplate })"
+                >
+                  {{ nodeTemplate.label }}
                 </div>
               </template>
             </div>
@@ -164,7 +165,7 @@ onMounted(async () => {
   gap: 1rem 0.5rem;
 }
 
-.vue-flow__drag-group div {
+.vue-flow__drag-group > .node-template {
   width: 10rem;
   height: 2.5rem;
   border-radius: 9999px;
