@@ -13,6 +13,7 @@
     :delete-key-code="null"
     selection-key-code="Control"
     multi-selection-key-code="Control"
+    :select-nodes-on-drag="false"
     @connect="onConnect"
     @nodes-change="onNodesChange"
     @nodeDragStop="onNodeDragStop"
