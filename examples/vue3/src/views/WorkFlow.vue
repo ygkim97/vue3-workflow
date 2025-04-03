@@ -44,7 +44,7 @@
       :node-toolbar-show-copy="true"
       :node-toolbar-show-execution="true"
       edge-type="smoothStep"
-      :marker-type="markerType"
+      :marker-type="{ markerEnd: 'arrowclosed' }"
       @save="controlsEvent('save', $event)"
       @switchTheme="controlsEvent('switchTheme', $event)"
       @executeAll="controlsEvent('executeAll', $event)"
@@ -59,38 +59,21 @@
       @edgeClick="onEdgeClick"
       @selectFlow="onSelectFlow"
     />
-    <Modal
-      v-if="isShowModal"
-      :data="editData"
-      @updateNode="updateNode"
-      @close="isShowModal = false"
-    ></Modal>
   </div>
+
+  <NodeEditModal
+    v-if="isShowModal && editNodeData"
+    :data="editNodeData"
+    @updateNode="updateNode"
+    @close="isShowModal = false"
+  ></NodeEditModal>
 </template>
 
 <script lang="ts" setup>
-import Sidebar from '../components/Sidebar.vue'
-import Modal from '../components/Modal.vue'
 import { ref, onMounted } from 'vue'
-import type { DagData, Node, Edge } from '../types/vueFlowCore'
-
-onMounted(() => {
-  getNodes()
-})
-
-const dagData = ref<Partial<DagData>>({})
-const getNodes = async () => {
-  const res = await fetch('http://192.168.107.19:5052/api/v1/dag/dag_dGVzdDAwMQ')
-
-  if (res.ok) {
-    const resData: { success: boolean; data: DagData } = await res.json()
-    if (resData.success) {
-      dagData.value = resData.data
-      nodes.value = dagData.value.nodes ?? []
-      edges.value = dagData.value.edges ?? []
-    }
-  }
-}
+import Sidebar from '../components/Sidebar.vue'
+import NodeEditModal from '../components/NodeEditModal.vue'
+import type { Node, Edge } from '../types/vueFlowCore'
 
 const vueFlowCoreRef = ref<{
   changeNode(data: Node): void
@@ -99,68 +82,47 @@ const vueFlowCoreRef = ref<{
   changeEdgeAnimated(data: string[]): void
 } | null>(null)
 
+const nodes = ref<Node[]>([])
+const edges = ref<Edge[]>([])
+
+const isDragOver = ref<boolean>(false)
+const isShowModal = ref<boolean>(false)
+const editNodeData = ref<Node | null>(null)
+const animatedEdgeIds = ref<string[]>([])
+
+const onDragStart = (event: { event: any; data?: object }) => {
+  if (vueFlowCoreRef.value) {
+    vueFlowCoreRef.value.onDragStart(event)
+  }
+}
+
+const onDraggingOver = (dragOver: boolean) => {
+  isDragOver.value = dragOver
+}
+
 const updateNode = (data: Node) => {
   if (vueFlowCoreRef.value) {
     vueFlowCoreRef.value.changeNode(data)
   }
 }
 
-const nodes = ref<Node[]>([])
-const edges = ref<Edge[]>([])
+const controlsEvent = async (eventName: string, param?: any) => {
+  console.log(eventName, param)
 
-const isDragOver = ref(false)
-
-const markerType = {
-  markerEnd: 'arrowclosed',
-}
-
-const isShowModal = ref(false)
-const editData = ref({})
-
-const controlsEvent = async (eventName: string, event?: any) => {
-  console.log(eventName, event)
-
-  if (eventName === 'save') {
-    const { id, name, description } = dagData.value
-    const res = await fetch(`http://192.168.107.19:5052/api/v1/dag/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json', // JSON 데이터임을 명시
-      },
-      body: JSON.stringify({ name, description, nodes: event.nodes, edges: event.edges }),
-    })
-
-    if (res.ok) {
-      alert('저장되었습니다.')
-    }
+  if (eventName === 'executeAll') {
+    setAnimateEdge(param)
   }
 }
 
-const nodeToolbarEvent = (eventName: string, event?: any) => {
-  console.log(eventName, event)
+const nodeToolbarEvent = (eventName: string, param?: any) => {
+  console.log(eventName, param)
 
   if (eventName === 'editNode') {
     isShowModal.value = true
-    editData.value = event
+    editNodeData.value = param
   }
 }
 
-const onDeleteFlow = ({ nodeIds, edgeIds }: { nodeIds: string[]; edgeIds: string[] }) => {
-  console.log('delete nodeIds: ', nodeIds)
-  console.log('delete edgeIds: ', edgeIds)
-}
-
-// NOTE: Sidebar DragAndDrop
-const onDragStart = (event: { event: any; data?: object }) => {
-  if (vueFlowCoreRef.value) {
-    vueFlowCoreRef.value.onDragStart(event)
-  }
-}
-const onDraggingOver = (dragOver: boolean) => {
-  isDragOver.value = dragOver
-}
-
-const animatedEdgeIds = ref(['a2be69bc-5bb9-42d4-8e6d-f2ff74ff02b3'])
 const onNodeClick = (node: object) => {
   console.log('nodeClick', node)
 }
@@ -168,28 +130,55 @@ const onNodeClick = (node: object) => {
 const onEdgeClick = (edge: Edge) => {
   console.log('edgeClick', edge)
 
-  if (animatedEdgeIds.value.includes(edge.id)) {
-    animatedEdgeIds.value = animatedEdgeIds.value.filter((id) => id !== edge.id)
-  } else {
+  updateEdge(edge)
+}
+
+const setAnimateEdge = ({ edges }: { edges: Edge[] }) => {
+  // TEST: changeEdgeAnimated 함수 사용하여 edge animated update
+  animatedEdgeIds.value = []
+  edges.forEach((edge) => {
     animatedEdgeIds.value.push(edge.id)
-  }
-  console.log(animatedEdgeIds.value)
+  })
 
   if (vueFlowCoreRef.value) {
     vueFlowCoreRef.value.changeEdgeAnimated(animatedEdgeIds.value)
   }
 
-  // TEST: changeEdge
-  /*const edgeData = { ...edge, animated: true, label: "test" } as Edge;
+  console.log('animatedEdgeIds', animatedEdgeIds.value)
+}
+
+const updateEdge = (edge: Edge) => {
+  // TEST: changeEdge 함수 사용하여 edge update
+  const edgeData = { ...edge, animated: false } as Edge
   if (vueFlowCoreRef.value) {
-    vueFlowCoreRef.value.changeEdge(edgeData);
-  }*/
+    vueFlowCoreRef.value.changeEdge(edgeData)
+  }
+
+  console.log('changeEdge', edgeData)
 }
 
 const onSelectFlow = (flow: { nodes: Node[]; edges: Edge[] }) => {
   console.log('selectNodes', flow.nodes)
   console.log('selectEdges', flow.edges)
 }
+
+const onDeleteFlow = ({ nodeIds, edgeIds }: { nodeIds: string[]; edgeIds: string[] }) => {
+  console.log('delete nodeIds: ', nodeIds)
+  console.log('delete edgeIds: ', edgeIds)
+}
+
+const getGraphData = async () => {
+  const res = await fetch('/data/graph.json')
+  if (res.ok) {
+    const graphData: { nodes: Node[]; edges: Edge[] } = await res.json()
+    nodes.value = graphData.nodes
+    edges.value = graphData.edges
+  }
+}
+
+onMounted(() => {
+  getGraphData()
+})
 </script>
 
 <style>

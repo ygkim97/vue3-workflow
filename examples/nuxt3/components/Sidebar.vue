@@ -33,8 +33,8 @@ const toggleAccordion = (category: string) => {
 };
 
 const onDragStart = ({ event, data }: { event: Event; data: NodeTemplate }) => {
-  const { id, label } = data;
-  emit("dragStart", { event, data: { template_node_id: id, label: label } });
+  const { id, type, label } = data;
+  emit("dragStart", { event, data: { template_node_id: id, type, label } });
 };
 
 onMounted(async () => {
@@ -53,7 +53,7 @@ onMounted(async () => {
 
 <template>
   <aside class="vue-flow__sidebar">
-    <div class="vue-flow__sidebar-title">WORK FLOW</div>
+    <div class="vue-flow__sidebar-title">NUXT WORKFLOW</div>
 
     <div class="vue-flow__sidebar-contents">
       <div

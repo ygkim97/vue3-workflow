@@ -1,6 +1,5 @@
 <template>
   <div class="nuxt-work-flow">
-    <header>NUXT - Workflow Core</header>
     <div class="work-flow">
       <Sidebar @dragStart="onDragStart"></Sidebar>
       <client-only>
@@ -197,15 +196,6 @@ body,
 .nuxt-work-flow {
   display: grid;
   height: 100%;
-  grid-template-rows: 50px auto;
-}
-
-header {
-  background-color: black;
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 20px;
 }
 
 .work-flow {
