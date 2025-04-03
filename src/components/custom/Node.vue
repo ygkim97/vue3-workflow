@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, type PropType } from "vue";
+import { computed, type PropType, onMounted } from "vue";
 import { Handle, Position, useVueFlow } from "@vue-flow/core";
 import { NodeToolbar } from "@vue-flow/node-toolbar";
 import SvgICon from "../common/svgICon.vue";
@@ -33,7 +33,7 @@ import { v4 as uuidv4 } from "uuid";
 import useFlowCommon from "../../composables/useFlowCommon.ts";
 import type { CustomNode, CustomEdge } from "../../types/vueFlowCore.ts";
 
-const { findNode, getNodes, getEdges } = useVueFlow();
+const { findNode, getNodes, getEdges, updateNodeData } = useVueFlow();
 const { addNode, deleteElements, findAvailablePosition, transformNodeData, transformEdgeData, getPathByNode } =
   useFlowCommon();
 
@@ -100,9 +100,11 @@ const nodeLabel = computed(() => {
   return props.data?.[props.nodeLabelKey];
 });
 
-const selectedNode = findNode(props.id);
+const nodeType = computed(() => {
+  return props.data?.[props.nodeTypeKey];
+});
 
-const nodeType = ref(props.data?.[props.nodeTypeKey] || "default");
+const selectedNode = findNode(props.id);
 
 const createNode = () => {
   if (!selectedNode) return;
@@ -154,6 +156,16 @@ const execute = () => {
   };
   emit("execute", params);
 };
+
+onMounted(() => {
+  // NOTE: default label, type 설정
+  if (!props.data[props.nodeLabelKey]) {
+    updateNodeData(props.id, { [props.nodeLabelKey]: "Node" });
+  }
+  if (!props.data[props.nodeTypeKey]) {
+    updateNodeData(props.id, { [props.nodeTypeKey]: "default" });
+  }
+});
 </script>
 
 <style>
