@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
-import type { Edge, GraphEdge, Node, XYPosition } from "@vue-flow/core";
 import { useVueFlow } from "@vue-flow/core";
+import type { Edge, GraphEdge, Node, XYPosition } from "@vue-flow/core";
 import type { CustomEdge, CustomNode } from "../types/vueFlowCore.ts";
 
 interface History {
@@ -209,7 +209,6 @@ export default function useFlowCommon() {
       historyStack.value.splice(currentStackKey.value);
     }
     historyStack.value.push(history);
-    console.log("historyStafck", historyStack.value);
   };
 
   const executeUndo = () => {

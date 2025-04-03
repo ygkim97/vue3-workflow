@@ -25,13 +25,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, type PropType, onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { Handle, Position, useVueFlow } from "@vue-flow/core";
-import { NodeToolbar } from "@vue-flow/node-toolbar";
-import SvgICon from "../common/svgICon.vue";
-import { v4 as uuidv4 } from "uuid";
-import useFlowCommon from "../../composables/useFlowCommon.ts";
+import type { PropType } from "vue";
 import type { CustomNode, CustomEdge } from "../../types/vueFlowCore.ts";
+import SvgICon from "../common/svgICon.vue";
+import { NodeToolbar } from "@vue-flow/node-toolbar";
+import useFlowCommon from "../../composables/useFlowCommon.ts";
+import { v4 as uuidv4 } from "uuid";
 
 const { findNode, getNodes, getEdges, updateNodeData } = useVueFlow();
 const { addNode, deleteElements, findAvailablePosition, transformNodeData, transformEdgeData, getPathByNode } =
@@ -96,6 +97,8 @@ const emit = defineEmits<{
   (e: "execute", item: { nodes: CustomNode[]; edges: CustomEdge[]; pathNodes: CustomNode[][] }): void;
 }>();
 
+const selectedNode = findNode(props.id);
+
 const nodeLabel = computed(() => {
   return props.data?.[props.nodeLabelKey];
 });
@@ -103,8 +106,6 @@ const nodeLabel = computed(() => {
 const nodeType = computed(() => {
   return props.data?.[props.nodeTypeKey];
 });
-
-const selectedNode = findNode(props.id);
 
 const createNode = () => {
   if (!selectedNode) return;
@@ -191,9 +192,12 @@ onMounted(() => {
 
 /* TODO: nodeToolbar 기본 style 적용 */
 .vue-flow__node-toolbar {
-  display: flex;
-  gap: 0.5rem;
+  display: grid;
+  grid-auto-flow: column; /* 가로 방향으로 아이템 나열 */
+  grid-auto-columns: 1fr; /* 모든 칸 동일 너비 */
+  justify-items: center; /* 각 셀 내부 가운데 정렬 */
   align-items: center;
+  gap: 0.5rem;
   background-color: whitesmoke;
   padding: 8px;
   border-radius: 8px;
@@ -201,12 +205,17 @@ onMounted(() => {
 }
 
 .vue-flow__node-toolbar button {
+  width: 30px;
+  height: 30px;
   background: whitesmoke;
-  color: white;
-  border: none;
-  padding: 0.5rem;
-  border-radius: 10px;
+  color: black;
+  border: 1px solid lightgray;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  padding: 0;
 }
 
 .vue-flow__node-toolbar button:hover {
@@ -215,8 +224,8 @@ onMounted(() => {
 
 .vue-flow__node-toolbar button svg,
 .vue-flow__node-toolbar button img {
-  width: 30px;
-  height: 30px;
+  width: 15px;
+  height: 15px;
   fill: black;
 }
 </style>

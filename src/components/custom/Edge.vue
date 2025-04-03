@@ -12,18 +12,12 @@
 </template>
 
 <script lang="ts" setup>
-import { type Component, computed, onMounted, watch, nextTick } from "vue";
+import { computed, onMounted, watch, nextTick } from "vue";
 import { SmoothStepEdge, StepEdge, BezierEdge, StraightEdge, useVueFlow } from "@vue-flow/core";
+import type { Component } from "vue";
 import type { Position } from "@vue-flow/core";
 
 const { findEdge } = useVueFlow();
-
-const edgeComponents: Record<string, Component> = {
-  default: BezierEdge,
-  step: StepEdge,
-  smoothStep: SmoothStepEdge,
-  straight: StraightEdge
-};
 
 const props = defineProps({
   id: {
@@ -56,6 +50,13 @@ const props = defineProps({
     default: () => {}
   }
 });
+
+const edgeComponents: Record<string, Component> = {
+  default: BezierEdge,
+  step: StepEdge,
+  smoothStep: SmoothStepEdge,
+  straight: StraightEdge
+};
 
 const edgeData = computed(() => {
   return findEdge(props.id);

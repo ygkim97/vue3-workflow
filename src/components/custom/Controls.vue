@@ -29,11 +29,11 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useVueFlow } from "@vue-flow/core";
-import { ControlButton, Controls } from "@vue-flow/controls";
 import type { PropType } from "vue";
 import type { PanelPositionType } from "@vue-flow/core";
 import type { CustomNode, CustomEdge } from "../../types/vueFlowCore.ts";
 import SvgICon from "../common/svgICon.vue";
+import { ControlButton, Controls } from "@vue-flow/controls";
 import useFlowCommon from "../../composables/useFlowCommon.ts";
 import useScreenshot from "../../composables/useScreenshot.ts";
 
@@ -101,14 +101,13 @@ const redoBtnClick = () => {
   executeRedo();
 };
 
-// TODO: ScreenShot 기능 구현 - 기능 오류
 const screenShotBtnClick = () => {
   // NOTE: 선택된 Node, Edge 선택 해제
   getSelectedElements.value.forEach((el) => {
     el.selected = false;
   });
 
-  capture(vueFlowRef.value as HTMLElement, { shouldDownload: true, isNodeDataOnly: true });
+  capture(vueFlowRef.value as HTMLElement, { shouldDownload: true, isNodeDataOnly: false });
 };
 
 const saveBtnClick = () => {

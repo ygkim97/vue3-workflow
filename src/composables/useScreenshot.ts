@@ -34,7 +34,7 @@ export default function useScreenshot(): UseScreenshot {
     const fileName = options.fileName ?? `vue-flow-screenshot-${Date.now()}`;
 
     let downloadEl = el;
-    // panel 등 제외하고 오직 node data 만 image 로 가져오기
+    // TODO: panel 등 제외하고 오직 node data 만 image 로 가져오기
     if (options.isNodeDataOnly) {
       downloadEl = el.querySelector(".vue-flow__viewport") as HTMLElement;
       downloadEl.style.backgroundColor = "white";

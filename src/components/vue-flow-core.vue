@@ -113,9 +113,9 @@ import type { PropType } from "vue";
 import type { Node, Edge, PanelPositionType, GraphEdge } from "@vue-flow/core";
 import type { CustomNode as CustomNodeType, CustomEdge as CustomEdgeType } from "../types/vueFlowCore.ts";
 import GraphData1 from "../graph-data/graph-data-1.json";
-import { v4 as uuidv4 } from "uuid";
 import useFlowCommon from "../composables/useFlowCommon.ts";
 import useDragAndDrop from "../composables/useDragAndDrop.ts";
+import { v4 as uuidv4 } from "uuid";
 
 import Background from "./custom/background.vue";
 import MiniMap from "./custom/MiniMap.vue";

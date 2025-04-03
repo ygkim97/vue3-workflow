@@ -37,10 +37,8 @@
       "type": "custom",
       "source": "test1",
       "target": "test2",
-      "data": {
-        "test": "test edge data"
-      },
-      "label": "Label",
+      "data": {},
+      "label": "",
       "labelStyle": {},
       "labelBgStyle": {},
       "labelBgPadding": [0, 0],
