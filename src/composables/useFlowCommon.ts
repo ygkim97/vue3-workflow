@@ -182,7 +182,9 @@ export default function useFlowCommon() {
     );
 
     const isNodePositionOccupied = nodes.some((node) => {
-      return getNodeByPosition({ nodeId: node.id, position: node.position }) !== null;
+      const originPosition = originNodePositionMap[node.id];
+      const isAtOriginPosition = originPosition.x === node.position.x && originPosition.y === node.position.y;
+      return getNodeByPosition({ nodeId: node.id, position: node.position }) !== null || isAtOriginPosition;
     });
 
     const changeNodePositionList: Node[] = [];
@@ -207,6 +209,7 @@ export default function useFlowCommon() {
       historyStack.value.splice(currentStackKey.value);
     }
     historyStack.value.push(history);
+    console.log("historyStafck", historyStack.value);
   };
 
   const executeUndo = () => {
