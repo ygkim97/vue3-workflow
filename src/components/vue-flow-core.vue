@@ -15,7 +15,7 @@
     multi-selection-key-code="Control"
     :select-nodes-on-drag="false"
     @connect="onConnect"
-    @nodes-change="onNodesChange"
+    @nodeDragStart="onNodeDragStart"
     @nodeDragStop="onNodeDragStop"
     @dragover="onDragOver"
     @dragleave="onDragLeave"
@@ -128,7 +128,7 @@ const {
   setSnapGrid,
   initHistoryStack,
   deleteElements,
-  onNodesChange,
+  onNodeDragStart,
   onNodeDragStop,
   addEdge,
   updateNodeData,

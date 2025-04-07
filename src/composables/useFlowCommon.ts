@@ -13,13 +13,13 @@ interface History {
 
 const state = {
   snapGrid: ref<[number, number]>([15, 15]),
-  lastNodeEventData: ref<{ id: string; from?: XYPosition }[]>([]),
+  dragStartPositionMap: ref<{ [key: string]: XYPosition }>({}),
   historyStack: ref<History[]>([]),
   currentStackKey: ref<number>(0)
 };
 
 export default function useFlowCommon() {
-  const { snapGrid, lastNodeEventData, historyStack, currentStackKey } = state;
+  const { snapGrid, dragStartPositionMap, historyStack, currentStackKey } = state;
   const {
     getSelectedNodes,
     getSelectedEdges,
@@ -121,17 +121,26 @@ export default function useFlowCommon() {
   };
 
   /**
-   * 노드 변경 이벤트 처리 함수
+   * 노드 드래그 시작 이벤트 처리 함수
    */
-  const onNodesChange = (event: any) => {
-    lastNodeEventData.value = event;
+  const onNodeDragStart = ({ nodes }: { nodes: Node[] }) => {
+    // NOTE: drag 시작 시, node position 정보 저장
+    nodes.forEach(({ id }) => {
+      const { position } = { ...findNode(id) };
+      dragStartPositionMap.value[id] = { x: position!.x, y: position!.y };
+    });
   };
 
   /**
    * 노드 드래그 종료 이벤트 처리 함수
    */
   const onNodeDragStop = ({ nodes }: { nodes: Node[] }) => {
+    if (Object.keys(dragStartPositionMap.value).length === 0) return;
+
     resetNodePositionIfOccupied(nodes);
+
+    // NOTE: drag 시작 시 저장한 node position 정보 초기화
+    dragStartPositionMap.value = {};
   };
 
   /**
@@ -171,18 +180,8 @@ export default function useFlowCommon() {
    * 만약 차지된 경우, 원래의 위치로 노드를 되돌리는 함수
    */
   const resetNodePositionIfOccupied = (nodes: Node[]) => {
-    const originNodePositionMap: { [key: string]: XYPosition } = lastNodeEventData.value.reduce(
-      (acc, node: { id: string; from?: XYPosition }) => {
-        if (node.from) {
-          acc[node.id] = node.from;
-        }
-        return acc;
-      },
-      {} as { [key: string]: XYPosition }
-    );
-
     const isNodePositionOccupied = nodes.some((node) => {
-      const originPosition = originNodePositionMap[node.id];
+      const originPosition = dragStartPositionMap.value[node.id];
       const isAtOriginPosition = originPosition.x === node.position.x && originPosition.y === node.position.y;
       return getNodeByPosition({ nodeId: node.id, position: node.position }) !== null || isAtOriginPosition;
     });
@@ -190,7 +189,7 @@ export default function useFlowCommon() {
     const changeNodePositionList: Node[] = [];
     const originNodePositionList: Node[] = nodes.map(({ id, position }) => {
       changeNodePositionList.push({ id, position });
-      const originPosition = { position: originNodePositionMap[id] };
+      const originPosition = { position: dragStartPositionMap.value[id] };
       if (isNodePositionOccupied) {
         updateNode(id, originPosition);
       }
@@ -385,7 +384,7 @@ export default function useFlowCommon() {
     updateEdgeData,
     deleteElements,
     findAvailablePosition,
-    onNodesChange,
+    onNodeDragStart,
     onNodeDragStop,
     getNodeByPosition,
     executeUndo,
