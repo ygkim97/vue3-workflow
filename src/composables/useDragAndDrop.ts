@@ -13,8 +13,8 @@ const state = {
 
 export default function useDragAndDrop() {
   const { draggedType, draggedData, isDragOver, isDragging } = state;
-  const { snapGrid, getNodeByPosition } = useFlowCommon();
-  const { screenToFlowCoordinate, addNodes } = useVueFlow();
+  const { snapGrid, getNodeByPosition, addNode } = useFlowCommon();
+  const { screenToFlowCoordinate } = useVueFlow();
 
   watch(isDragging, (dragging) => {
     document.body.style.userSelect = dragging ? "none" : "";
@@ -80,14 +80,12 @@ export default function useDragAndDrop() {
       return;
     }
 
-    addNodes([
-      {
-        id: uuidv4(),
-        type: "custom",
-        position: alignedPosition,
-        data: draggedData.value
-      }
-    ]);
+    addNode({
+      id: uuidv4(),
+      type: "custom",
+      position: alignedPosition,
+      data: draggedData.value
+    });
   };
 
   return {
