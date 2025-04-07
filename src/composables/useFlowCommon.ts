@@ -74,7 +74,7 @@ export default function useFlowCommon() {
   const updateEdgeData = (edge: GraphEdge) => {
     const originEdge = findEdge(edge.id);
     removeEdges(edge.id);
-    addEdge({ ...originEdge, ...edge });
+    addEdges({ ...originEdge, ...edge });
   };
 
   /**
