@@ -50,6 +50,7 @@ export default function useFlowCommon() {
 
   const initHistoryStack = ({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) => {
     historyStack.value = [{ actionType: "init", nodes, edges }];
+    currentStackKey.value = 0;
   };
 
   const addNode = (nodes: Node) => {
