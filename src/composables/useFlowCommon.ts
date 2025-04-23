@@ -14,13 +14,14 @@ interface History {
 const state = {
   snapGrid: ref<[number, number]>([15, 15]),
   dragStartPositionMap: ref<{ [key: string]: XYPosition }>({}),
-  historyStack: ref<History[]>([]),
-  currentStackKey: ref<number>(0)
+  historyStack: ref<{ [key: string]: History[] }>({}),
+  currentStackKey: ref<{ [key: string]: number }>({})
 };
 
 export default function useFlowCommon() {
   const { snapGrid, dragStartPositionMap, historyStack, currentStackKey } = state;
   const {
+    id,
     getSelectedNodes,
     getSelectedEdges,
     getConnectedEdges,
@@ -37,11 +38,11 @@ export default function useFlowCommon() {
   } = useVueFlow();
 
   const isUndoDisabled = computed(() => {
-    return currentStackKey.value === 0;
+    return currentStackKey.value[id] === 0;
   });
 
   const isRedoDisabled = computed(() => {
-    return historyStack.value.length === currentStackKey.value + 1;
+    return historyStack.value[id]?.length === currentStackKey.value[id] + 1;
   });
 
   const setSnapGrid = (data: [number, number]) => {
@@ -49,8 +50,8 @@ export default function useFlowCommon() {
   };
 
   const initHistoryStack = ({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) => {
-    historyStack.value = [{ actionType: "init", nodes, edges }];
-    currentStackKey.value = 0;
+    historyStack.value[id] = [{ actionType: "init", nodes, edges }];
+    currentStackKey.value[id] = 0;
   };
 
   const addNode = (nodes: Node) => {
@@ -204,19 +205,19 @@ export default function useFlowCommon() {
   };
 
   const pushHistory = (history: History) => {
-    currentStackKey.value++;
-    if (historyStack.value[currentStackKey.value]) {
-      historyStack.value.splice(currentStackKey.value);
+    currentStackKey.value[id]++;
+    if (historyStack.value[currentStackKey.value[id]]) {
+      historyStack.value[id].splice(currentStackKey.value[id]);
     }
-    historyStack.value.push(history);
+    historyStack.value[id].push(history);
   };
 
   const executeUndo = () => {
-    if (currentStackKey.value === 0) {
+    if (currentStackKey.value[id] === 0) {
       return;
     }
 
-    const { actionType, nodes, edges, origin }: History = historyStack.value[currentStackKey.value--];
+    const { actionType, nodes, edges, origin }: History = historyStack.value[id][currentStackKey.value[id]--];
     if (actionType === "position" && origin) {
       origin.forEach((node: Node) => {
         updateNode(node.id, { position: node.position });
@@ -242,11 +243,11 @@ export default function useFlowCommon() {
   };
 
   const executeRedo = () => {
-    if (historyStack.value.length === currentStackKey.value + 1) {
+    if (historyStack.value[id].length === currentStackKey.value[id] + 1) {
       return;
     }
 
-    const { actionType, nodes, edges, change }: History = historyStack.value[++currentStackKey.value];
+    const { actionType, nodes, edges, change }: History = historyStack.value[id][++currentStackKey.value[id]];
     if (actionType === "position" && change) {
       change.forEach((node: Node) => {
         updateNode(node.id, { position: node.position });
