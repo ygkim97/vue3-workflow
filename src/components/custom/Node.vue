@@ -35,7 +35,7 @@ import useFlowCommon from "../../composables/useFlowCommon.ts";
 import { v4 as uuidv4 } from "uuid";
 
 const { findNode, getNodes, getEdges, updateNodeData } = useVueFlow();
-const { addNode, deleteElements, findAvailablePosition, transformNodeData, transformEdgeData, getPathByNode } =
+const { addNode, deleteElements, findAvailablePosition, transformNodeData, transformEdgeData, getPathByNodeId } =
   useFlowCommon();
 
 const props = defineProps({
@@ -153,7 +153,7 @@ const execute = () => {
   const params = {
     nodes: transformNodes,
     edges: transformEdgeData(getEdges.value) as CustomEdge[],
-    pathNodes: getPathByNode(selectedNode)
+    pathNodes: getPathByNodeId(selectedNode.id)
   };
   emit("execute", params);
 };

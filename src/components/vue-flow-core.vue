@@ -123,7 +123,8 @@ import Controls from "./custom/Controls.vue";
 import CustomNode from "./custom/Node.vue";
 import CustomEdge from "./custom/Edge.vue";
 
-const { findNode, findEdge, getSelectedNodes, getSelectedEdges, getEdges } = useVueFlow();
+const { findNode, findEdge, getSelectedNodes, getSelectedEdges, getNodes, getEdges, getIncomers, getOutgoers } =
+  useVueFlow();
 const {
   setSnapGrid,
   initHistoryStack,
@@ -134,7 +135,9 @@ const {
   updateNodeData,
   updateEdgeData,
   transformNodeData,
-  transformEdgeData
+  transformEdgeData,
+  getPath,
+  getPathByNodeId
 } = useFlowCommon();
 const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
 
@@ -399,7 +402,25 @@ defineExpose({
   changeNode,
   changeEdge,
   onDragStart,
-  changeEdgeAnimated
+  changeEdgeAnimated,
+  get getNodes() {
+    return transformNodeData(getNodes.value);
+  },
+  get getEdges() {
+    return transformEdgeData(getEdges.value);
+  },
+  get getPath() {
+    return getPath();
+  },
+  getPathByNodeId,
+  getIncomers(id: string) {
+    const node = getIncomers(id);
+    return transformNodeData(node);
+  },
+  getOutgoers(id: string) {
+    const node = getOutgoers(id);
+    return transformNodeData(node);
+  }
 });
 
 onMounted(() => {

@@ -1,6 +1,19 @@
 <template>
   <div class="work-flow">
     <Sidebar @dragStart="onDragStart"></Sidebar>
+    <div class="test-box">
+      <div class="test-box__header" @click="isOpen = !isOpen">
+        📦 TEST BUTTON BOX
+        <img v-if="isOpen" src="../assets/icon/chevron-up.svg" alt="" />
+        <img v-else src="../assets/icon/chevron-down.svg" alt="" />
+      </div>
+
+      <div v-show="isOpen" class="test-box__buttons">
+        <button class="test-box__button" @click="getNodesData">getNodes</button>
+        <button class="test-box__button" @click="getEdgesData">getEdges</button>
+        <button class="test-box__button" @click="getPathData">getPath</button>
+      </div>
+    </div>
     <VueFlowCore
       ref="vueFlowCoreRef"
       :nodes="nodes"
@@ -79,12 +92,19 @@ const vueFlowCoreRef = ref<{
   changeNode(data: Node): void
   changeEdge(data: Edge): void
   onDragStart(data: { event: any; data?: object }): void
-  changeEdgeAnimated(data: string[]): void
+  changeEdgeAnimated(edgeIds: string[]): void
+  getNodes: Node[]
+  getEdges: Edge[]
+  getPath: Node[][]
+  getPathByNodeId(nodeId: string): Node[][]
+  getIncomers(nodeId: string): Node[]
+  getOutgoers(nodeId: string): Node[]
 } | null>(null)
 
 const nodes = ref<Node[]>([])
 const edges = ref<Edge[]>([])
 
+const isOpen = ref(false)
 const isDragOver = ref<boolean>(false)
 const isShowModal = ref<boolean>(false)
 const editNodeData = ref<Node | null>(null)
@@ -123,8 +143,16 @@ const nodeToolbarEvent = (eventName: string, param?: any) => {
   }
 }
 
-const onNodeClick = (node: object) => {
+const onNodeClick = (node: Node) => {
   console.log('nodeClick', node)
+
+  const ref = vueFlowCoreRef.value
+  if (ref) {
+    const nodeId = node.id
+    console.log('getPathByNodeId', ref.getPathByNodeId(nodeId))
+    console.log('getIncomers', ref.getIncomers(nodeId))
+    console.log('getOutgoers', ref.getOutgoers(nodeId))
+  }
 }
 
 const onEdgeClick = (edge: Edge) => {
@@ -176,6 +204,27 @@ const getGraphData = async () => {
   }
 }
 
+/* TEST BOX FUNCTION */
+const getNodesData = () => {
+  const ref = vueFlowCoreRef.value
+  if (ref) {
+    console.log('getNodes', ref.getNodes)
+  }
+}
+const getEdgesData = () => {
+  const ref = vueFlowCoreRef.value
+  if (ref) {
+    console.log('getEdges', ref.getEdges)
+  }
+}
+
+const getPathData = () => {
+  const ref = vueFlowCoreRef.value
+  if (ref) {
+    console.log('getPath', ref.getPath)
+  }
+}
+
 onMounted(() => {
   getGraphData()
 })
@@ -186,5 +235,51 @@ onMounted(() => {
   display: grid;
   grid-template-columns: 400px auto;
   overflow: hidden;
+}
+
+.test-box {
+  position: absolute;
+  top: 20px;
+  left: 420px;
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+  z-index: 1000;
+  width: max-content;
+}
+
+.test-box__header {
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.test-box__header > img {
+  width: 12px;
+}
+
+.test-box__buttons {
+  display: grid;
+  row-gap: 10px;
+  margin-top: 12px;
+}
+
+.test-box__button {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  background-color: #f3f4f6;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+  font-size: 13px;
+}
+
+.test-box__button:hover {
+  background-color: #e5e7eb;
+  transform: translateY(-1px);
 }
 </style>

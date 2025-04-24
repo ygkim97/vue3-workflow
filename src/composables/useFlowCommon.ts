@@ -341,13 +341,13 @@ export default function useFlowCommon() {
     }));
   };
 
-  const getPathByNode = (node: Node) => {
+  const getPathByNodeId = (nodeId: string) => {
     const pathIds: Node[][] = [];
     const targetPath: Node[][] = [];
 
     getNodes.value.forEach((n) => {
       if (getIncomers(n.id).length === 0) {
-        findPaths(n, [n], pathIds, node.id, targetPath);
+        findPaths(n, [n], pathIds, nodeId, targetPath);
       }
     });
 
@@ -393,6 +393,6 @@ export default function useFlowCommon() {
     transformNodeData,
     transformEdgeData,
     getPath,
-    getPathByNode
+    getPathByNodeId
   };
 }
