@@ -378,12 +378,12 @@ const onDelete = () => {
   }
 };
 
-const changeNode = (node: Node) => {
-  updateNodeData(node);
+const changeNode = (node: Node, shouldPushHistory: boolean = false) => {
+  updateNodeData(node, shouldPushHistory);
 };
 
-const changeEdge = (edge: GraphEdge) => {
-  updateEdgeData(edge);
+const changeEdge = (edge: GraphEdge, shouldPushHistory: boolean = false) => {
+  updateEdgeData(edge, shouldPushHistory);
 };
 
 const onKeyup = (event: any) => {

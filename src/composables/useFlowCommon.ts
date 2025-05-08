@@ -66,17 +66,21 @@ export default function useFlowCommon() {
     pushHistory({ actionType: "add", edges: [edges] });
   };
 
-  const updateNodeData = (node: Node) => {
+  const updateNodeData = (node: Node, shouldPushHistory: boolean) => {
     const originNodeData = { ...findNode(node.id) } as Node;
     updateNode(node.id, node);
     // NOTE: Node 수정한 경우, historyStack 에 추가
-    pushHistory({ actionType: "edit", origin: [originNodeData], change: [node] });
+    if (shouldPushHistory) {
+      pushHistory({ actionType: "edit", origin: [originNodeData], change: [node] });
+    }
   };
 
-  const updateEdgeData = (edge: GraphEdge) => {
+  const updateEdgeData = (edge: GraphEdge, shouldPushHistory: boolean) => {
     const originEdge = findEdge(edge.id);
     removeEdges(edge.id);
     addEdges({ ...originEdge, ...edge });
+    // TODO: edge pushHistory
+    console.log("updateEdgeData", shouldPushHistory);
   };
 
   /**
