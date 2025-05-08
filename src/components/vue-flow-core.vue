@@ -382,7 +382,7 @@ const changeNode = (node: Node, shouldPushHistory: boolean = false) => {
   updateNodeData(node, shouldPushHistory);
 };
 
-const changeEdge = (edge: GraphEdge, shouldPushHistory: boolean = false) => {
+const changeEdge = (edge: Edge, shouldPushHistory: boolean = false) => {
   updateEdgeData(edge, shouldPushHistory);
 };
 

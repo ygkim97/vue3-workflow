@@ -1,14 +1,14 @@
 import { computed, ref } from "vue";
 import { useVueFlow } from "@vue-flow/core";
-import type { Edge, GraphEdge, Node, XYPosition } from "@vue-flow/core";
+import type { Edge, Node, XYPosition } from "@vue-flow/core";
 import type { CustomEdge, CustomNode } from "../types/vueFlowCore.ts";
 
 interface History {
   actionType: string;
   nodes?: Node[] | undefined;
   edges?: Edge[] | undefined;
-  origin?: Node[] | undefined;
-  change?: Node[] | undefined;
+  origin?: Node[] | Edge[] | undefined;
+  change?: Node[] | Edge[] | undefined;
 }
 
 const state = {
@@ -75,12 +75,18 @@ export default function useFlowCommon() {
     }
   };
 
-  const updateEdgeData = (edge: GraphEdge, shouldPushHistory: boolean) => {
-    const originEdge = findEdge(edge.id);
+  const updateEdge = (edge: Edge) => {
     removeEdges(edge.id);
-    addEdges({ ...originEdge, ...edge });
-    // TODO: edge pushHistory
-    console.log("updateEdgeData", shouldPushHistory);
+    addEdges(edge);
+  };
+
+  const updateEdgeData = (edge: Edge, shouldPushHistory: boolean) => {
+    const originEdgeData = findEdge(edge.id) as Edge;
+    updateEdge({ ...originEdgeData, ...edge });
+
+    if (shouldPushHistory) {
+      pushHistory({ actionType: "editEdge", origin: [originEdgeData], change: [edge] });
+    }
   };
 
   /**
@@ -223,7 +229,7 @@ export default function useFlowCommon() {
 
     const { actionType, nodes, edges, origin }: History = historyStack.value[id][currentStackKey.value[id]--];
     if (actionType === "position" && origin) {
-      origin.forEach((node: Node) => {
+      (origin as Node[]).forEach((node: Node) => {
         updateNode(node.id, { position: node.position });
       });
     } else if (actionType === "add") {
@@ -241,8 +247,11 @@ export default function useFlowCommon() {
         addEdges(edges);
       }
     } else if (actionType === "edit" && origin) {
-      const node = origin[0];
+      const node = origin[0] as Node;
       updateNode(node.id, node);
+    } else if (actionType === "editEdge" && origin) {
+      const edge = origin[0] as Edge;
+      updateEdge(edge);
     }
   };
 
@@ -253,7 +262,7 @@ export default function useFlowCommon() {
 
     const { actionType, nodes, edges, change }: History = historyStack.value[id][++currentStackKey.value[id]];
     if (actionType === "position" && change) {
-      change.forEach((node: Node) => {
+      (change as Node[]).forEach((node: Node) => {
         updateNode(node.id, { position: node.position });
       });
     } else if (actionType === "add") {
@@ -271,8 +280,11 @@ export default function useFlowCommon() {
         removeEdges(edges);
       }
     } else if (actionType === "edit" && change) {
-      const node = change[0];
+      const node = change[0] as Node;
       updateNode(node.id, node);
+    } else if (actionType === "editEdge" && change) {
+      const edge = change[0] as Edge;
+      updateEdge(edge);
     }
   };
 
