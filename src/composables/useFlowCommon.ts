@@ -67,7 +67,7 @@ export default function useFlowCommon() {
   };
 
   const updateNodeData = (node: Node, shouldPushHistory: boolean) => {
-    const originNodeData = { ...findNode(node.id) } as Node;
+    const originNodeData = { class: "", ...findNode(node.id) } as Node;
     updateNode(node.id, node);
     // NOTE: Node 수정한 경우, historyStack 에 추가
     if (shouldPushHistory) {
