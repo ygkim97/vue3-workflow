@@ -350,6 +350,15 @@ watch(isDragOver, (value) => {
   emit("draggingOver", value);
 });
 
+// NOTE: props로 전달된 nodes/edges 값을 기반으로 history 초기 상태 설정
+watch(
+  () => ({ nodes: props.nodes, edges: props.edges }),
+  ({ nodes, edges }) => {
+    initHistoryStack({ nodes, edges });
+  },
+  { deep: true }
+);
+
 const onNodeClick = ({ node }: { node: Node }) => {
   emit("nodeClick", transformNodeData(node) as CustomNodeType);
 };
