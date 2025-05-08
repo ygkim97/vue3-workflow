@@ -89,8 +89,8 @@ import NodeEditModal from '../components/NodeEditModal.vue'
 import type { Node, Edge } from '../types/vueFlowCore'
 
 const vueFlowCoreRef = ref<{
-  changeNode(data: Node): void
-  changeEdge(data: Edge): void
+  changeNode(data: Node, shouldPushHistory?: boolean): void
+  changeEdge(data: Edge, shouldPushHistory?: boolean): void
   onDragStart(data: { event: any; data?: object }): void
   changeEdgeAnimated(edgeIds: string[]): void
   getNodes: Node[]
@@ -122,7 +122,7 @@ const onDraggingOver = (dragOver: boolean) => {
 
 const updateNode = (data: Node) => {
   if (vueFlowCoreRef.value) {
-    vueFlowCoreRef.value.changeNode(data)
+    vueFlowCoreRef.value.changeNode(data, true)
   }
 }
 
@@ -177,12 +177,9 @@ const setAnimateEdge = ({ edges }: { edges: Edge[] }) => {
 
 const updateEdge = (edge: Edge) => {
   // TEST: changeEdge 함수 사용하여 edge update
-  const edgeData = { ...edge, animated: false } as Edge
   if (vueFlowCoreRef.value) {
-    vueFlowCoreRef.value.changeEdge(edgeData)
+    vueFlowCoreRef.value.changeEdge({ ...edge, label: edge.label ? '' : 'Label' }, true)
   }
-
-  console.log('changeEdge', edgeData)
 }
 
 const onSelectFlow = (flow: { nodes: Node[]; edges: Edge[] }) => {
