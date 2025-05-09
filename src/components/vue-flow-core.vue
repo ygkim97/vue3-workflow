@@ -4,6 +4,8 @@
     :tabindex="0"
     :nodes="props.nodes"
     :edges="props.edges"
+    :nodes-connectable="!props.interactionDisabled"
+    :elements-selectable="!props.interactionDisabled"
     :fit-view-on-init="props.fitViewOnInit"
     :min-zoom="props.minZoom < MIN_ZOOM ? MIN_ZOOM : props.minZoom"
     :max-zoom="props.maxZoom > MAX_ZOOM ? MAX_ZOOM : props.maxZoom"
@@ -156,6 +158,10 @@ const props = defineProps({
   edges: {
     type: Array as PropType<Edge[]>,
     default: () => GraphData1.edges // TODO: 개발하기 위해 default 데이터 설정, 개발 완료 후 삭제
+  },
+  interactionDisabled: {
+    type: Boolean,
+    default: false
   },
   minZoom: {
     type: Number,
@@ -442,7 +448,7 @@ defineExpose({
 onMounted(() => {
   // NOTE: 'Delete' 키를 누를 때 onDelete 함수가 실행되도록 설정
   window.addEventListener("keydown", (event) => {
-    if (event.key === "Delete") {
+    if (event.key === "Delete" && !props.interactionDisabled) {
       onDelete();
     }
   });
@@ -452,18 +458,20 @@ onMounted(() => {
     if (event.ctrlKey) {
       event.preventDefault(); // 컨텍스트 메뉴 차단
 
-      const target = event.target as HTMLElement;
-      const nodeEl = target.closest(".vue-flow__node");
-      if (nodeEl) {
-        const nodeId = nodeEl.getAttribute("data-id");
-        const node = findNode(nodeId);
-        if (node) node.selected = !node.selected;
-      }
-      const edgeEl = target.closest(".vue-flow__edge");
-      if (edgeEl) {
-        const edgeId = edgeEl.getAttribute("data-id") as string;
-        const edge = findEdge(edgeId);
-        if (edge) edge.selected = !edge.selected;
+      if (!props.interactionDisabled) {
+        const target = event.target as HTMLElement;
+        const nodeEl = target.closest(".vue-flow__node");
+        if (nodeEl) {
+          const nodeId = nodeEl.getAttribute("data-id");
+          const node = findNode(nodeId);
+          if (node) node.selected = !node.selected;
+        }
+        const edgeEl = target.closest(".vue-flow__edge");
+        if (edgeEl) {
+          const edgeId = edgeEl.getAttribute("data-id") as string;
+          const edge = findEdge(edgeId);
+          if (edge) edge.selected = !edge.selected;
+        }
       }
     }
   });
