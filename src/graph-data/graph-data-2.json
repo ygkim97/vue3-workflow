@@ -1,0 +1,31 @@
+{
+  "nodes": [
+    {
+      "id": "test1",
+      "type": "custom",
+      "position": { "x": 100, "y": 100 },
+      "data": { "label": "Start", "type": "input" }
+    },
+    {
+      "id": "test2",
+      "type": "custom",
+      "position": { "x": 400, "y": 100 },
+      "data": { "label": "Process", "type": "default" }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-2",
+      "type": "custom",
+      "source": "test1",
+      "target": "test2",
+      "data": {},
+      "label": "",
+      "labelStyle": {},
+      "labelBgStyle": {},
+      "labelBgPadding": [0, 0],
+      "labelBgBorderRadius": 0,
+      "style": {}
+    }
+  ]
+}

@@ -4,9 +4,9 @@
     :tabindex="0"
     :nodes="props.nodes"
     :edges="props.edges"
-    :fit-view-on-init="true"
-    :min-zoom="props.minZoom < 1 ? 1 : props.minZoom"
-    :max-zoom="props.maxZoom > 10 ? 10 : props.maxZoom"
+    :fit-view-on-init="props.fitViewOnInit"
+    :min-zoom="props.minZoom < MIN_ZOOM ? MIN_ZOOM : props.minZoom"
+    :max-zoom="props.maxZoom > MAX_ZOOM ? MAX_ZOOM : props.maxZoom"
     :snap-to-grid="true"
     :snap-grid="props.snapGrid as [number, number]"
     :connection-line-options="{}"
@@ -141,6 +141,9 @@ const {
 } = useFlowCommon();
 const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
 
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 10;
+
 const props = defineProps({
   id: {
     type: String,
@@ -192,6 +195,10 @@ const props = defineProps({
   bgPatternColor: {
     type: String,
     default: "#81818a"
+  },
+  fitViewOnInit: {
+    type: Boolean,
+    default: false
   },
   useMiniMap: {
     type: Boolean,
