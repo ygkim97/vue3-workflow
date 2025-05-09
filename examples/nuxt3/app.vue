@@ -29,6 +29,7 @@
           :max-zoom="20"
           :snap-grid="[200, 100]"
           :use-mini-map="true"
+          :fit-view-on-init="true"
           mini-map-position="bottom-right"
           mini-map-node-color="darkgray"
           mini-map-node-stroke-color="lightgray"
