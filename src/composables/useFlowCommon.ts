@@ -76,13 +76,15 @@ export default function useFlowCommon() {
   };
 
   const updateEdge = (edge: Edge) => {
+    const updateEdgeData = { ...findEdge(edge.id), ...edge };
+
     removeEdges(edge.id);
-    addEdges(edge);
+    addEdges(updateEdgeData);
   };
 
   const updateEdgeData = (edge: Edge, shouldPushHistory: boolean) => {
     const originEdgeData = findEdge(edge.id) as Edge;
-    updateEdge({ ...originEdgeData, ...edge });
+    updateEdge(edge);
 
     if (shouldPushHistory) {
       pushHistory({ actionType: "editEdge", origin: [originEdgeData], change: [edge] });
