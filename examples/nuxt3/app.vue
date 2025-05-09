@@ -9,10 +9,14 @@
           <img v-else src="./assets/icon/chevron-down.svg" alt="" />
         </div>
 
-        <div v-show="isOpen" class="test-box__buttons">
+        <div v-show="isOpen" class="test-box__list">
           <button class="test-box__button" @click="getNodesData">getNodes</button>
           <button class="test-box__button" @click="getEdgesData">getEdges</button>
           <button class="test-box__button" @click="getPathData">getPath</button>
+          <label class="test-box__checkbox">
+            <input type="checkbox" v-model="interactionDisabled" />
+            <span class="">상호작용 비활성화</span>
+          </label>
         </div>
       </div>
       <client-only>
@@ -20,6 +24,7 @@
           ref="vueFlowCoreRef"
           :nodes="nodes"
           :edges="edges"
+          :interaction-disabled="interactionDisabled"
           :bg-color="isDragOver ? 'rgba(93,140,188,0.42)' : '#edf2f7'"
           :showBgPattern="true"
           :bg-pattern-gap="10"
@@ -114,6 +119,7 @@ const isDragOver = ref<boolean>(false);
 const isShowModal = ref<boolean>(false);
 const editNodeData = ref<Node | null>(null);
 const animatedEdgeIds = ref<string[]>([]);
+const interactionDisabled = ref<boolean>(false);
 
 const onDragStart = (event: { event: any; data?: object }) => {
   if (vueFlowCoreRef.value) {
@@ -274,7 +280,7 @@ body,
   width: 12px;
 }
 
-.test-box__buttons {
+.test-box__list {
   display: grid;
   row-gap: 10px;
   margin-top: 12px;
@@ -295,6 +301,13 @@ body,
 .test-box__button:hover {
   background-color: #e5e7eb;
   transform: translateY(-1px);
+}
+
+.test-box__checkbox {
+  font-size: 13px;
+  display: flex;
+  grid-gap: 2px;
+  align-items: center;
 }
 
 /* NOTE: vueFlow Class Names 사용해서 css 적용 */
