@@ -79,6 +79,7 @@
           @nodeClick="onNodeClick"
           @edgeClick="onEdgeClick"
           @selectFlow="onSelectFlow"
+          @paneClick="onPaneClick"
         />
       </client-only>
     </div>
@@ -231,6 +232,10 @@ const getPathData = () => {
   if (ref) {
     console.log("getPath", ref.getPath);
   }
+};
+
+const onPaneClick = () => {
+  console.log("onPaneClick");
 };
 
 onMounted(() => {

@@ -25,6 +25,7 @@
     @node-click="onNodeClick"
     @edge-click="onEdgeClick"
     @keyup="onKeyup"
+    @pane-click="$emit('paneClick')"
   >
     <Background
       :bg-color="props.bgColor"
@@ -348,6 +349,7 @@ const emit = defineEmits<{
   (e: "draggingOver", item: boolean): void;
   (e: "nodeClick", item: CustomNodeType): void;
   (e: "edgeClick", item: CustomEdgeType): void;
+  (e: "paneClick"): void;
   (e: "selectFlow", item: { nodes: CustomNodeType[]; edges: CustomEdgeType[] }): void;
 }>();
 
