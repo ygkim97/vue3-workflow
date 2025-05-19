@@ -43,6 +43,7 @@ export default function useScreenshot(): UseScreenshot {
 
   const capture = async (el: HTMLElement, options: UseScreenshotOptions = {}) => {
     const fileName = options.fileName ?? `vue-flow-screenshot-${Date.now()}`;
+    // NOTE: 캡처 시 스크롤바나 레이아웃 깨짐 방지를 위해 body overflow를 일시적으로 숨김
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -50,6 +51,7 @@ export default function useScreenshot(): UseScreenshot {
       const data = await convertToImage(el, {
         quality: 0.95,
         filter: (node: Node) => {
+          // NOTE: .vue-flow__panel 요소는 UI 패널이므로 캡처 대상에서 제외하여 순수 플로우 영역만 캡처함
           return !(node instanceof HTMLElement && node.matches(".vue-flow__panel"));
         }
       });
