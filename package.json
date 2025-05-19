@@ -14,7 +14,7 @@
     "@vue-flow/core": "^1.42.3",
     "@vue-flow/minimap": "^1.5.2",
     "@vue-flow/node-toolbar": "^1.1.1",
-    "html-to-image": "^1.11.11",
+    "dom-to-image-more": "^3.6.0",
     "uuid": "^11.1.0",
     "vite-svg-loader": "^5.1.0",
     "vue": "^3.5.13"
