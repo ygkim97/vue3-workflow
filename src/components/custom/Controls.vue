@@ -27,7 +27,7 @@
   </Controls>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import { useVueFlow } from "@vue-flow/core";
 import type { PropType } from "vue";
 import type { PanelPositionType } from "@vue-flow/core";
@@ -101,11 +101,13 @@ const redoBtnClick = () => {
   executeRedo();
 };
 
-const screenShotBtnClick = () => {
+const screenShotBtnClick = async () => {
   // NOTE: 선택된 Node, Edge 선택 해제
   getSelectedElements.value.forEach((el) => {
     el.selected = false;
   });
+
+  await nextTick();
 
   capture(vueFlowRef.value as HTMLElement, { shouldDownload: true, isNodeDataOnly: false });
 };
