@@ -109,7 +109,7 @@ const screenShotBtnClick = async () => {
 
   await nextTick();
 
-  capture(vueFlowRef.value as HTMLElement, { shouldDownload: true, isNodeDataOnly: false });
+  capture(vueFlowRef.value as HTMLElement, { shouldDownload: true, isNodeDataOnly: true });
 };
 
 const saveBtnClick = () => {

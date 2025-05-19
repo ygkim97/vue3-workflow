@@ -29,34 +29,31 @@ export default function useScreenshot(): UseScreenshot {
   const error = ref();
 
   const capture = async (el: HTMLElement, options: UseScreenshotOptions = {}) => {
-    let data = {};
-
     const fileName = options.fileName ?? `vue-flow-screenshot-${Date.now()}`;
 
-    let downloadEl = el;
-    // TODO: panel 등 제외하고 오직 node data 만 image 로 가져오기
-    if (options.isNodeDataOnly) {
-      downloadEl = el.querySelector(".vue-flow__viewport") as HTMLElement;
-      downloadEl.style.backgroundColor = "white";
-    }
-
-    switch (options.type) {
-      case "jpeg":
-        data = await toJpeg(downloadEl, options);
-        break;
-      case "png":
-        data = await toPng(downloadEl, options);
-        break;
-      default:
-        data = await toPng(downloadEl, options);
-        break;
-    }
+    const data = await convertToImage(el, {
+      filter: (node) => {
+        // 캡처 제외 대상 제거
+        const exclude = options.isNodeDataOnly ? [".vue-flow__panel"] : [];
+        return !exclude.some((sel) => node instanceof HTMLElement && node.matches(sel));
+      }
+    });
 
     if (options.shouldDownload && fileName !== "") {
       download(fileName);
     }
 
     return data;
+  };
+
+  const convertToImage = async (el: HTMLElement, options: UseScreenshotOptions): Promise<any> => {
+    switch (options.type) {
+      case "jpeg":
+        return await toJpeg(el, options);
+      case "png":
+      default:
+        return await toPng(el, options);
+    }
   };
 
   const toJpeg = (el: HTMLElement, options: HTMLToImageOptions = { quality: 0.95 }) => {
