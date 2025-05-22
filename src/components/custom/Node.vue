@@ -20,7 +20,7 @@
     </button>
   </NodeToolbar>
   <Handle v-if="nodeType !== 'input'" type="target" :position="Position.Left" />
-  <div>{{ nodeLabel }}</div>
+  <div :title="nodeLabel">{{ nodeLabel }}</div>
   <Handle v-if="nodeType !== 'output'" type="source" :position="Position.Right" />
 </template>
 
@@ -182,6 +182,14 @@ onMounted(() => {
   color: var(--vf-node-text);
   background-color: var(--vf-node-bg);
   border-color: var(--vf-node-color);
+}
+
+/* NOTE: 노드 라벨 말줄임 */
+.vue-flow__node > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
 }
 
 .vue-flow__node.selected {
